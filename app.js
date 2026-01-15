@@ -1040,55 +1040,100 @@ const Web3Chatbot = () => {
         'Bagaimana cara mulai di Web3?'
     ];
 
-    const generateNewSuggestions = (botReply, lastQuestion, currentSuggestions) => {
+    const generateNewSuggestions = (botReply, fullHistory, currentSuggestions, activeTopic) => {
         const lowerReply = botReply.toLowerCase();
-        const lowerLastQuestion = lastQuestion.toLowerCase();
-        const lowerCurrentSuggestions = currentSuggestions.map(s => s.toLowerCase());
+        
+        // 1. Filter: Apa saja yang SUDAH ditanyakan user? (Agar tidak muncul lagi)
+        const askedQuestions = new Set(
+            fullHistory
+                .filter(msg => msg.role === 'user')
+                .map(msg => msg.content.toLowerCase().trim())
+        );
 
-        let relevantSuggestions = [];
-
-        const keywordMap = {
-            'blockchain': ['Bagaimana cara kerja blockchain?', 'Apa itu smart contract?'],
-            'nft': ['Apa itu NFT?', 'Bagaimana cara membuat NFT?'],
-            'dao': ['Apa itu DAO?', 'Contoh DAO terkenal?'],
-            'defi': ['Apa itu DeFi?', 'Apa resiko DeFi?'],
-            'mining': ['Apa itu mining (Proof-of-Work)?', 'Apakah mining boros energi?'],
-            'staking': ['Apa itu staking (Proof-of-Stake)?', 'Apa resiko staking?'],
-            'wallet': ['Apa itu wallet crypto?', 'Bagaimana cara mengamankan wallet?']
+        // 2. KAMUS PINTAR: Deteksi kata di jawaban bot -> Saran pertanyaan lanjutan
+        //    Format: 'kata_kunci_di_jawaban': ['Saran 1', 'Saran 2']
+        const contextualMap = {
+            // Topik Dasar
+            'blockchain': ['Apa bedanya Public vs Private Blockchain?', 'Apakah blockchain bisa di-hack?'],
+            'desentralisasi': ['Apa keuntungan desentralisasi?', 'Apakah ada kelemahan desentralisasi?'],
+            'smart contract': ['Contoh penggunaan smart contract sehari-hari?', 'Apakah smart contract bisa diubah?'],
+            'web3': ['Apa bedanya Web3 dengan Metaverse?', 'Kapan Web3 akan mainstream?'],
+            
+            // Topik Transaksi & Biaya
+            'gas': ['Kenapa Gas Fee bisa mahal?', 'Bagaimana cara hemat Gas Fee?', 'Apa itu Gwei?'],
+            'fee': ['Kenapa biaya transaksi berbeda-beda?', 'Blockchain mana yang biayanya termurah?'],
+            'transaksi': ['Berapa lama transaksi crypto diproses?', 'Apa itu TXID (Transaction ID)?'],
+            
+            // Topik Wallet & Keamanan
+            'wallet': ['Apa bedanya Custodial vs Non-Custodial?', 'Rekomendasi wallet untuk pemula?'],
+            'dompet': ['Bagaimana cara restore wallet yang hilang?', 'Apa itu Hardware Wallet?'],
+            'seed phrase': ['Bolehkan screenshot Seed Phrase?', 'Apa bedanya Seed Phrase dan Private Key?'],
+            'private key': ['Apa bedanya Private Key dan Public Key?', 'Bahaya share Private Key?'],
+            'hack': ['Bagaimana cara mengamankan aset dari hacker?', 'Apa itu phising?'],
+            'scam': ['Apa tanda-tanda project Rug Pull?', 'Bagaimana cek kredibilitas token?'],
+            
+            // Topik Investasi & Token
+            'bitcoin': ['Apa itu Bitcoin Halving?', 'Kenapa jumlah Bitcoin terbatas 21 juta?'],
+            'ethereum': ['Apa bedanya Ethereum dan Bitcoin?', 'Apa itu Ethereum 2.0?'],
+            'nft': ['Apa kegunaan NFT selain seni?', 'Bagaimana cara jual NFT gratis?', 'Risiko investasi NFT?'],
+            'token': ['Apa bedanya Utility Token dan Security Token?', 'Apa itu Tokenomics?'],
+            'stablecoin': ['Kenapa kita butuh Stablecoin?', 'Apa itu USDT/USDC?'],
+            'volatilitas': ['Kenapa harga crypto naik turun drastis?', 'Tips hadapi market crash?'],
+            
+            // Topik DeFi & DAO
+            'defi': ['Apa risiko terbesar di DeFi?', 'Apa bedanya nabung di Bank vs DeFi?'],
+            'bunga': ['Dari mana asal bunga/yield di DeFi?', 'Apa itu Yield Farming?'],
+            'dao': ['Bagaimana cara ikut voting di DAO?', 'Contoh DAO yang sukses?'],
+            'staking': ['Apakah staking ada risikonya?', 'Berapa persen keuntungan staking?']
         };
 
-        for (const keyword in keywordMap) {
+        let candidates = [];
+
+        // 3. SCANNING: Cek apakah jawaban bot mengandung kata kunci di atas
+        //    Ini prioritas TERTINGGI (Contextual)
+        for (const [keyword, questions] of Object.entries(contextualMap)) {
             if (lowerReply.includes(keyword)) {
-                relevantSuggestions.push(...keywordMap[keyword]);
+                candidates.push(...questions);
             }
         }
+
+        // 4. PRIORITAS KEDUA: Ambil dari topik yang sedang aktif (jika ada)
+        //    Agar user tetap terpandu di jalur belajarnya
+        if (activeTopic && topicSuggestionMap[activeTopic]) {
+            candidates.push(...topicSuggestionMap[activeTopic]);
+        }
+
+        // 5. PRIORITAS KETIGA: Master List (Cadangan jika jawaban bot pendek/umum)
+        candidates.push(...masterSuggestionList);
+
+        // 6. FILTER & FINALISASI
+        let finalSuggestions = [];
+        const seenCandidates = new Set(); 
+
+        for (const question of candidates) {
+            const cleanQ = question.toLowerCase().trim();
+
         
-        let freshSuggestions = masterSuggestionList.filter(suggestion => {
-            const lowerSuggestion = suggestion.toLowerCase();
-            return lowerSuggestion !== lowerLastQuestion && !lowerCurrentSuggestions.includes(lowerSuggestion);
-        });
-
-        let newSuggestions = [];
-        let uniqueRelevant = [...new Set(relevantSuggestions)];
-        uniqueRelevant = uniqueRelevant.filter(suggestion => {
-                 const lowerSuggestion = suggestion.toLowerCase();
-                 return lowerSuggestion !== lowerLastQuestion && !lowerCurrentSuggestions.includes(lowerSuggestion);
-        });
-
-        newSuggestions.push(...uniqueRelevant);
-        const shuffledFreshList = shuffleArray(freshSuggestions);
-        let i = 0;
-        while (newSuggestions.length < 4 && i < shuffledFreshList.length) {
-            const randomSuggestion = shuffledFreshList[i];
-            if (!newSuggestions.map(s => s.toLowerCase()).includes(randomSuggestion.toLowerCase())) {
-                newSuggestions.push(randomSuggestion);
+            const isAlreadyAsked = askedQuestions.has(cleanQ);
+            const isDuplicate = seenCandidates.has(cleanQ);
+            
+            if (!isAlreadyAsked && !isDuplicate) {
+                finalSuggestions.push(question);
+                seenCandidates.add(cleanQ);
             }
-            i++;
+
+            // Batasi maksimal 4 saran
+            if (finalSuggestions.length >= 4) break;
         }
 
-        return newSuggestions.slice(0, 4);
-    };
+  
+        if (finalSuggestions.length < 2) {
+            const remaining = shuffleArray(masterSuggestionList).filter(q => !askedQuestions.has(q.toLowerCase().trim()));
+            finalSuggestions.push(...remaining.slice(0, 4 - finalSuggestions.length));
+        }
 
+        return finalSuggestions;
+    };
     const sendMessage = async (messageText) => {
         const userMessage = messageText || input;
         if (!userMessage.trim()) return;
