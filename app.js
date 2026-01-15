@@ -438,7 +438,7 @@ const Web3Chatbot = () => {
             );
         }
 
-        // --- (VISUAL LAMA TETAP ADA DI BAWAH SINI) ---
+
 
         // --- VISUAL 1: AKSES INFORMASI (Information Access) ---
         if (lowerTopic.includes('akses informasi') || lowerTopic.includes('mencari informasi')) {
@@ -991,6 +991,222 @@ const Web3Chatbot = () => {
                         <div className="bg-white/80 p-2 rounded-lg text-center border border-purple-100">
                             <span className="text-lg">🤝</span>
                             <div className="text-[8px] font-bold mt-1">Sosialisasi</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: Bitcoin Halving (Pemotongan Reward) ---
+        if (lowerTopic.includes('halving')) {
+            return (
+                <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 p-6 rounded-2xl border-2 border-yellow-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">✂️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Bitcoin Halving</h3>
+                    </div>
+                    
+                    <div className="relative pt-4 pb-2">
+                        {/* Garis Waktu */}
+                        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10"></div>
+                        
+                        <div className="flex justify-between items-center text-center">
+                            {/* 2012 */}
+                            <div className="bg-white p-2 rounded-lg border border-yellow-300 shadow-sm transform scale-90 opacity-60">
+                                <div className="text-[10px] font-bold text-gray-500">2012</div>
+                                <div className="text-xs font-bold text-yellow-600">50 BTC</div>
+                            </div>
+                            
+                            {/* 2016 */}
+                            <div className="bg-white p-2 rounded-lg border border-yellow-300 shadow-sm transform scale-90 opacity-80">
+                                <div className="text-[10px] font-bold text-gray-500">2016</div>
+                                <div className="text-xs font-bold text-yellow-600">25 BTC</div>
+                            </div>
+
+                            {/* Scissors Icon */}
+                            <div className="text-2xl text-red-500 z-10 animate-pulse">✂️</div>
+
+                            {/* 2024 */}
+                            <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white p-2 rounded-lg shadow-lg transform scale-110 z-20">
+                                <div className="text-[10px] font-bold text-yellow-100">Now</div>
+                                <div className="text-sm font-bold">3.125</div>
+                                <div className="text-[8px]">BTC/Block</div>
+                            </div>
+                        </div>
+                        
+                        <p className="text-center text-[10px] text-gray-500 mt-4 italic">
+                            "Setiap 4 tahun, suplai Bitcoin baru dipotong setengah. Ini yang bikin langka!"
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: Hard Fork vs Soft Fork (Analogi Jalan Bercabang) ---
+        if (lowerTopic.includes('fork')) {
+            return (
+                <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 p-6 rounded-2xl border-2 border-gray-300 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-gray-600 to-slate-700 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🍴</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Blockchain Fork</h3>
+                    </div>
+
+                    <div className="space-y-4">
+                        {/* Hard Fork */}
+                        <div className="relative h-16 flex items-center">
+                            <div className="absolute left-0 text-[10px] font-bold rotate-90 text-gray-400">OLD</div>
+                            <div className="w-1/3 h-2 bg-gray-400 rounded-l-full"></div>
+                            
+                            {/* Split */}
+                            <div className="flex-1 h-16 relative">
+                                {/* Jalur Lama (Mati/Beda) */}
+                                <div className="absolute top-1 left-0 w-full h-2 bg-gray-300 transform -rotate-12 origin-left opacity-50"></div>
+                                {/* Jalur Baru (Hard Fork) */}
+                                <div className="absolute bottom-1 left-0 w-full h-2 bg-red-500 transform rotate-12 origin-left rounded-r-full flex items-center justify-end pr-2">
+                                    <span className="text-[8px] text-white font-bold">Aturan Baru (Tidak Cocok)</span>
+                                </div>
+                            </div>
+                            <div className="absolute right-0 top-0 text-xs font-bold text-red-600">Hard Fork 🚫</div>
+                        </div>
+
+                        {/* Soft Fork */}
+                        <div className="relative h-10 flex items-center mt-2">
+                             <div className="w-1/3 h-2 bg-gray-400 rounded-l-full"></div>
+                             <div className="flex-1 h-2 bg-green-500 rounded-r-full flex items-center justify-center">
+                                <span className="text-[8px] text-white font-bold">Update (Masih Cocok)</span>
+                             </div>
+                             <div className="absolute right-0 text-xs font-bold text-green-600">Soft Fork ✅</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: Liquidity Pool (Analogi Panci Pencampur) ---
+        if (lowerTopic.includes('liquidity pool') || lowerTopic.includes('lp')) {
+            return (
+                <div className="bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-50 p-6 rounded-2xl border-2 border-cyan-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🏊</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Liquidity Pool</h3>
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        {/* Input Tokens */}
+                        <div className="flex gap-8 mb-[-10px] z-10">
+                            <div className="flex flex-col items-center animate-bounce">
+                                <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center border-2 border-yellow-600 font-bold text-[10px]">A</div>
+                                <span className="text-[10px] text-gray-500">Token A</span>
+                            </div>
+                             <div className="flex flex-col items-center animate-bounce" style={{animationDelay: '0.2s'}}>
+                                <div className="w-8 h-8 bg-blue-400 rounded-full flex items-center justify-center border-2 border-blue-600 font-bold text-[10px] text-white">B</div>
+                                <span className="text-[10px] text-gray-500">Token B</span>
+                            </div>
+                        </div>
+
+                        {/* The Pool (Pot) */}
+                        <div className="w-32 h-24 bg-white/50 backdrop-blur-sm border-b-4 border-x-2 border-cyan-400 rounded-b-[3rem] relative overflow-hidden flex items-end justify-center shadow-inner">
+                            <div className="absolute inset-0 bg-cyan-200 opacity-30 w-full h-full animate-pulse"></div>
+                            <div className="text-3xl mb-4 z-10 mix-blend-multiply">💧</div>
+                            <div className="absolute bottom-2 text-[8px] font-bold text-cyan-800">Smart Contract</div>
+                        </div>
+
+                        {/* Output */}
+                        <div className="mt-[-10px] z-20">
+                             <div className="bg-green-100 px-3 py-1 rounded-full border border-green-400 shadow-sm flex items-center gap-2">
+                                <span className="text-xs">🎟️</span>
+                                <span className="text-[10px] font-bold text-green-800">LP Token (Bukti Setor)</span>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: Market Psychology (FOMO, FUD, HODL) ---
+        if (lowerTopic.includes('fomo') || lowerTopic.includes('fud') || lowerTopic.includes('hodl')) {
+            return (
+                <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-pink-50 p-6 rounded-2xl border-2 border-purple-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🧠</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Psikologi Market</h3>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                        {/* FOMO */}
+                        <div className={`p-2 rounded-xl border-2 text-center transition-all ${lowerTopic.includes('fomo') ? 'bg-white border-green-400 scale-105 shadow-md' : 'bg-white/50 border-gray-200 grayscale opacity-60'}`}>
+                            <div className="text-2xl mb-1">🤩</div>
+                            <div className="text-[10px] font-bold text-green-600">FOMO</div>
+                            <div className="text-[8px] leading-tight text-gray-500">"Takut ketinggalan, beli di pucuk!"</div>
+                        </div>
+
+                        {/* FUD */}
+                        <div className={`p-2 rounded-xl border-2 text-center transition-all ${lowerTopic.includes('fud') ? 'bg-white border-red-400 scale-105 shadow-md' : 'bg-white/50 border-gray-200 grayscale opacity-60'}`}>
+                            <div className="text-2xl mb-1">😱</div>
+                            <div className="text-[10px] font-bold text-red-600">FUD</div>
+                            <div className="text-[8px] leading-tight text-gray-500">"Panik berita buruk, jual rugi!"</div>
+                        </div>
+
+                        {/* HODL */}
+                        <div className={`p-2 rounded-xl border-2 text-center transition-all ${lowerTopic.includes('hodl') ? 'bg-white border-blue-400 scale-105 shadow-md' : 'bg-white/50 border-gray-200 grayscale opacity-60'}`}>
+                            <div className="text-2xl mb-1">💎🙌</div>
+                            <div className="text-[10px] font-bold text-blue-600">HODL</div>
+                            <div className="text-[8px] leading-tight text-gray-500">"Tahan terus sampai bulan!"</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: CEX vs DEX (Perbandingan) ---
+        if (lowerTopic.includes('cex') || lowerTopic.includes('dex') || lowerTopic.includes('exchange')) {
+            return (
+                 <div className="bg-gradient-to-br from-indigo-50 via-blue-50 to-slate-50 p-6 rounded-2xl border-2 border-indigo-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">⚖️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Tempat Jual Beli (Exchange)</h3>
+                    </div>
+
+                    <div className="flex gap-2">
+                        {/* CEX */}
+                        <div className="flex-1 bg-white p-3 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+                             <div className="absolute top-0 right-0 bg-gray-200 text-[8px] px-2 py-0.5 rounded-bl font-bold text-gray-600">Bank Style</div>
+                             <div className="text-center mb-2 mt-1">
+                                <span className="text-2xl">🏦</span>
+                                <div className="text-xs font-bold text-indigo-700">CEX</div>
+                             </div>
+                             <ul className="text-[9px] text-gray-600 space-y-1">
+                                <li className="flex gap-1">✅ Mudah (Login)</li>
+                                <li className="flex gap-1">❌ Data di Pusat</li>
+                                <li className="flex gap-1">❌ Rawan Bankrupt</li>
+                             </ul>
+                        </div>
+
+                        {/* VS */}
+                        <div className="flex items-center justify-center font-bold text-gray-300 text-xs">VS</div>
+
+                        {/* DEX */}
+                        <div className="flex-1 bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-3 rounded-xl shadow-md relative overflow-hidden">
+                             <div className="absolute top-0 right-0 bg-white/20 text-[8px] px-2 py-0.5 rounded-bl font-bold">Web3 Style</div>
+                             <div className="text-center mb-2 mt-1">
+                                <span className="text-2xl">🦄</span>
+                                <div className="text-xs font-bold">DEX</div>
+                             </div>
+                             <ul className="text-[9px] text-indigo-100 space-y-1">
+                                <li className="flex gap-1">✅ Anonim</li>
+                                <li className="flex gap-1">✅ Kontrol Penuh</li>
+                                <li className="flex gap-1">⚠️ Risiko Sendiri</li>
+                             </ul>
                         </div>
                     </div>
                 </div>
