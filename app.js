@@ -801,7 +801,201 @@ const Web3Chatbot = () => {
                 </div>
             );
         }
-        
+
+        if (lowerTopic.includes('private key') || lowerTopic.includes('public key') || lowerTopic.includes('kunci rahasia')) {
+            return (
+                <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 p-6 rounded-2xl border-2 border-slate-300 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-gray-700 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🔑</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Analogi Wallet</h3>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        {/* Public Key */}
+                        <div className="bg-green-50 p-4 rounded-xl border-l-4 border-green-500 shadow-sm">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-xs font-bold text-green-700">Public Key (Alamat)</span>
+                                <span className="text-xl">📬</span>
+                            </div>
+                            <p className="text-[10px] text-gray-600">Seperti <strong>Alamat Rumah/Email</strong>. Boleh disebar ke siapa saja untuk menerima kiriman.</p>
+                            <div className="mt-2 bg-white px-2 py-1 rounded border border-green-200 text-[10px] font-mono text-gray-500 truncate">
+                                0x71C...9A2 (Boleh Share ✅)
+                            </div>
+                        </div>
+
+                        {/* Private Key */}
+                        <div className="bg-red-50 p-4 rounded-xl border-l-4 border-red-500 shadow-sm">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-xs font-bold text-red-700">Private Key (Kunci)</span>
+                                <span className="text-xl">🗝️</span>
+                            </div>
+                            <p className="text-[10px] text-gray-600">Seperti <strong>Kunci Brankas/Password</strong>. Jika orang lain tahu, hartamu hilang selamanya.</p>
+                            <div className="mt-2 bg-white px-2 py-1 rounded border border-red-200 text-[10px] font-mono text-red-500 blur-sm hover:blur-none transition-all cursor-pointer">
+                                5Kb8...zQ1 (JANGAN SHARE ❌)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+       
+        if (lowerTopic.includes('bull') || lowerTopic.includes('bear') || lowerTopic.includes('market')) {
+            return (
+                <div className="bg-gradient-to-br from-indigo-50 via-blue-50 to-sky-50 p-6 rounded-2xl border-2 border-indigo-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">📈</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Kondisi Pasar</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                        {/* Bull Market */}
+                        <div className="bg-white p-3 rounded-xl border-2 border-green-400 shadow-md hover:scale-105 transition-transform">
+                            <div className="text-4xl mb-2 text-center animate-bounce">🐂</div>
+                            <div className="text-sm font-bold text-green-600 text-center uppercase">Bull Market</div>
+                            <div className="h-1 w-full bg-gray-100 my-2 rounded overflow-hidden">
+                                <div className="h-full bg-green-500 w-3/4"></div>
+                            </div>
+                            <div className="text-[10px] text-center text-gray-500">Harga Naik 🚀<br/>Optimisme Tinggi</div>
+                        </div>
+                        
+                        {/* Bear Market */}
+                        <div className="bg-white p-3 rounded-xl border-2 border-red-400 shadow-md hover:scale-105 transition-transform">
+                            <div className="text-4xl mb-2 text-center">🐻</div>
+                            <div className="text-sm font-bold text-red-600 text-center uppercase">Bear Market</div>
+                            <div className="h-1 w-full bg-gray-100 my-2 rounded overflow-hidden">
+                                <div className="h-full bg-red-500 w-3/4 ml-auto"></div>
+                            </div>
+                            <div className="text-[10px] text-center text-gray-500">Harga Turun 📉<br/>Pesimisme/Takut</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (lowerTopic.includes('airdrop')) {
+            return (
+                <div className="bg-gradient-to-br from-sky-50 via-cyan-50 to-teal-50 p-6 rounded-2xl border-2 border-sky-200 mt-4 shadow-lg overflow-hidden relative">
+                    <div className="flex items-center gap-3 mb-5 relative z-10">
+                        <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🪂</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Mekanisme Airdrop</h3>
+                    </div>
+                    
+                    {/* Animasi Parachute */}
+                    <div className="flex justify-around items-start h-32 relative">
+                        <div className="absolute top-0 left-1/4 animate-[float_4s_ease-in-out_infinite]">
+                            <div className="text-3xl">🪂</div>
+                            <div className="w-6 h-6 bg-yellow-400 rounded-full border-2 border-yellow-600 flex items-center justify-center text-[8px] font-bold text-yellow-800 mx-auto -mt-1 shadow-sm">$TOKEN</div>
+                        </div>
+                        <div className="absolute top-4 left-2/4 animate-[float_5s_ease-in-out_infinite]">
+                            <div className="text-3xl">🪂</div>
+                            <div className="w-6 h-6 bg-yellow-400 rounded-full border-2 border-yellow-600 flex items-center justify-center text-[8px] font-bold text-yellow-800 mx-auto -mt-1 shadow-sm">$TOKEN</div>
+                        </div>
+                        <div className="absolute top-2 left-3/4 animate-[float_4.5s_ease-in-out_infinite]">
+                            <div className="text-3xl">🪂</div>
+                            <div className="w-6 h-6 bg-yellow-400 rounded-full border-2 border-yellow-600 flex items-center justify-center text-[8px] font-bold text-yellow-800 mx-auto -mt-1 shadow-sm">$TOKEN</div>
+                        </div>
+                        
+                        <div className="absolute bottom-0 w-full flex justify-around">
+                            <div className="text-2xl">🤠</div>
+                            <div className="text-2xl">👱‍♀️</div>
+                            <div className="text-2xl">👨‍💻</div>
+                        </div>
+                    </div>
+                    
+                    <div className="bg-white/60 p-2 rounded-lg text-center mt-2 relative z-10 border border-sky-100">
+                        <p className="text-[10px] text-gray-600 italic">"Token gratis dikirim ke dompet pengguna awal sebagai hadiah/marketing."</p>
+                    </div>
+                </div>
+            );
+        }
+
+      
+        if (lowerTopic.includes('phishing') || lowerTopic.includes('scam') || lowerTopic.includes('hack')) {
+            return (
+                <div className="bg-gradient-to-br from-orange-50 via-red-50 to-rose-50 p-6 rounded-2xl border-2 border-orange-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🎣</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Bahaya Phishing</h3>
+                    </div>
+
+                    <div className="relative bg-white p-4 rounded-xl border border-gray-200 shadow-inner">
+                        {/* The Trap */}
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex flex-col items-center w-1/3">
+                                <div className="text-4xl mb-1 transform -rotate-12">😈</div>
+                                <span className="text-[10px] font-bold text-red-600">Hacker</span>
+                            </div>
+                            <div className="w-1/3 h-0.5 bg-gray-300 relative">
+                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xl">🎣</div>
+                                <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] bg-yellow-100 px-1 rounded border border-yellow-300">Link Palsu</div>
+                            </div>
+                            <div className="flex flex-col items-center w-1/3">
+                                <div className="text-4xl mb-1">🐠</div>
+                                <span className="text-[10px] font-bold text-blue-600">Korban</span>
+                            </div>
+                        </div>
+
+                        {/* Tips */}
+                        <div className="bg-red-50 p-2 rounded-lg border border-red-100 flex gap-2 items-start">
+                            <span className="text-lg">⚠️</span>
+                            <div className="text-[10px] text-gray-700">
+                                <strong>Jangan klik link sembarangan!</strong> Hacker membuat website palsu yang mirip aslinya untuk mencuri Seed Phrase kamu.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+  
+        if (lowerTopic.includes('metaverse')) {
+            return (
+                <div className="bg-gradient-to-br from-fuchsia-50 via-purple-50 to-indigo-50 p-6 rounded-2xl border-2 border-fuchsia-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🕶️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Konsep Metaverse</h3>
+                    </div>
+
+                    <div className="flex items-center justify-center gap-2 mb-4">
+                        <div className="bg-white p-3 rounded-2xl border border-gray-200 shadow-lg z-10 w-24 text-center">
+                            <div className="text-2xl mb-1">🧍</div>
+                            <div className="text-[10px] font-bold">Kamu</div>
+                            <div className="text-[8px] text-gray-400">Dunia Nyata</div>
+                        </div>
+                        <div className="text-2xl text-purple-500 font-bold animate-pulse">↔️</div>
+                        <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-3 rounded-2xl shadow-lg z-10 w-24 text-center text-white">
+                            <div className="text-2xl mb-1">🤖</div>
+                            <div className="text-[10px] font-bold">Avatar</div>
+                            <div className="text-[8px] text-purple-200">Dunia Virtual</div>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-2">
+                        <div className="bg-white/80 p-2 rounded-lg text-center border border-purple-100">
+                            <span className="text-lg">🎮</span>
+                            <div className="text-[8px] font-bold mt-1">Main Game</div>
+                        </div>
+                        <div className="bg-white/80 p-2 rounded-lg text-center border border-purple-100">
+                            <span className="text-lg">🎨</span>
+                            <div className="text-[8px] font-bold mt-1">Beli Aset (NFT)</div>
+                        </div>
+                        <div className="bg-white/80 p-2 rounded-lg text-center border border-purple-100">
+                            <span className="text-lg">🤝</span>
+                            <div className="text-[8px] font-bold mt-1">Sosialisasi</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
         // Loop melalui map untuk mencari keyword yang cocok (FALLBACK)
         for (const keyword in visualMap) {
             if (lowerTopic.includes(keyword)) {
