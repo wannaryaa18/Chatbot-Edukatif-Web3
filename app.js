@@ -1561,24 +1561,31 @@ const sendMessage = async (messageText) => {
             </div>
 
             <div className="flex-1 flex flex-col lg:ml-80">
-                <div className="glass-effect border-b border-white border-opacity-30 p-4 shadow-lg">
-                    <div className="flex items-center justify-between">
+              <div className="glass-effect border-b border-white border-opacity-30 p-4 shadow-lg sticky top-0 z-30">
+                    {/* PERBAIKAN: Ganti 'justify-between' dengan 'gap-4' agar menu & logo nempel di kiri */}
+                    <div className="flex items-center gap-4">
+                        
+                        {/* Tombol Menu (Hanya di Mobile) */}
                         <button 
-                            className="lg:hidden text-purple-600 hover:text-purple-700 transition-colors"
+                            className="lg:hidden text-purple-600 hover:text-purple-700 transition-colors p-1 rounded-lg hover:bg-purple-100"
                             onClick={() => setIsSidebarOpen(true)}
                         >
                             <Menu />
                         </button>
-                        <div className="flex items-center gap-3 lg:gap-4">
+
+                        {/* Logo & Judul */}
+                        <div className="flex items-center gap-3 lg:gap-4 flex-1 lg:flex-none">
                             <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg glow floating">
                                 <Sparkles />
                             </div>
                             <div>
-                                <h1 className="font-black text-lg lg:text-xl gradient-text">Web3 Learning Hub</h1>
-                                <p className="text-xs text-gray-600 font-medium">Asisten belajar konsep Web3 🚀</p>
+                                <h1 className="font-black text-lg lg:text-xl gradient-text leading-tight">Web3 Hub</h1>
+                                <p className="text-[10px] sm:text-xs text-gray-600 font-medium leading-tight">Asisten Belajar Web3 🚀</p>
                             </div>
                         </div>
-                        <div className="hidden md:flex items-center gap-2 bg-white bg-opacity-60 px-4 py-2 rounded-full shadow-sm">
+
+                        {/* Topik Indicator (Desktop Only) - Pakai ml-auto agar mentok kanan */}
+                        <div className="hidden md:flex items-center gap-2 bg-white bg-opacity-60 px-4 py-2 rounded-full shadow-sm ml-auto">
                             <span className="text-xs font-semibold text-gray-600">Topik:</span>
                             <span className="text-xs font-bold text-purple-600">{activeTopic}</span>
                         </div>
