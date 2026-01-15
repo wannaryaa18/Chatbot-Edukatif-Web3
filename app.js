@@ -172,23 +172,43 @@ const Web3Chatbot = () => {
     };
     
     // --- 2. Komponen Visual Generik ---
+ // --- UPDATE: Generic Visual (Versi Premium) ---
     const GenericVisual = ({ icon, title, description, colorTheme }) => {
          const theme = colorTheme || themes.purple; 
+         
          return (
-              <div className={`${theme.bg} p-6 rounded-2xl border-2 ${theme.border} mt-4 shadow-lg`}>
-                   <div className="flex items-center gap-3 mb-5">
-                        <div className={`w-10 h-10 ${theme.iconBg} rounded-xl flex items-center justify-center shadow-md floating`}>
-                             <span className="text-white text-xl">{icon}</span>
-                        </div>
-                        <h3 className="font-bold text-gray-800 text-lg">{title}</h3>
-                   </div>
-                   <div className="bg-white p-5 rounded-2xl border-2 border-gray-200 shadow-inner">
-                        <p className="text-sm text-gray-700 leading-relaxed">{description}</p>
+              <div className={`${theme.bg} p-6 rounded-3xl border-2 ${theme.border} mt-4 shadow-xl relative overflow-hidden group hover:scale-[1.02] transition-all duration-300`}>
+                   {/* Background Decoration */}
+                   <div className={`absolute top-0 right-0 w-32 h-32 ${theme.iconBg} opacity-10 rounded-full blur-2xl transform translate-x-10 -translate-y-10`}></div>
+                   <div className={`absolute bottom-0 left-0 w-24 h-24 ${theme.iconBg} opacity-10 rounded-full blur-xl transform -translate-x-5 translate-y-5`}></div>
+
+                   <div className="relative z-10">
+                       <div className="flex items-start gap-4 mb-5">
+                            {/* Icon dengan Animasi Floating */}
+                            <div className={`w-14 h-14 ${theme.iconBg} rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/20 floating shrink-0`}>
+                                 <span className="text-white text-3xl filter drop-shadow-md">{icon}</span>
+                            </div>
+                            
+                            <div>
+                                <h3 className="font-black text-gray-800 text-xl tracking-tight mb-1">{title}</h3>
+                                <div className="flex gap-2">
+                                    <span className="text-[10px] font-bold px-2 py-0.5 bg-white/60 rounded-full border border-gray-200 text-gray-500 uppercase tracking-wide">
+                                        Konsep Dasar
+                                    </span>
+                                </div>
+                            </div>
+                       </div>
+
+                       {/* Description Box */}
+                       <div className="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-md transition-shadow">
+                            <p className="text-sm text-gray-700 leading-relaxed font-medium">
+                                {description}
+                            </p>
+                       </div>
                    </div>
               </div>
          );
     };
-
     // --- 3. Map Diagram Generik ---
     const visualMap = {
         'dapp': { icon: '📱', title: 'dApp (Aplikasi Terdesentralisasi)', description: 'Seperti aplikasi biasa (contoh: Twitter), tapi berjalan di atas blockchain. Tidak ada satu perusahaan yang mengontrolnya.', theme: themes.purple },
