@@ -1,4 +1,4 @@
-// File: app.js (Frontend) - Updated with BLS 5 Dimensions
+// File: app.js (Frontend)
 
 const { useState, useRef, useEffect } = React;
 
@@ -94,7 +94,7 @@ const topicSuggestionMap = {
         'Apa bedanya Coin vs Token?',
         'Apa itu Proof-of-Stake?'
     ],
-    // --- 5 DIMENSI LITERASI WEB3 (NEW) ---
+    // ---LITERASI WEB3  ---
     'Akses Informasi': [
         'Di mana saya bisa belajar Web3 yang valid?',
         'Bagaimana cara mencari info project crypto?',
@@ -237,7 +237,7 @@ const Web3Chatbot = () => {
     };
 
 
-    // --- 4. Fungsi generateVisual dengan 5 DIMENSI BARU ---
+    // --- 4. Fungsi generateVisual dengan Literasi Web3 ---
     const generateVisual = (topic) => {
         const lowerTopic = topic.toLowerCase();
         
@@ -838,9 +838,9 @@ const Web3Chatbot = () => {
                 </div>
                 
                 <div className="space-y-2">
-                    {/* --- MENU BARU: 5 Dimensi Literasi Web3 --- */}
+                    {/* --- Literasi Web3 --- */}
                     <SidebarSubmenu
-                        title="Literasi Web3 (5 Dimensi)"
+                        title="Literasi Web3"
                         icon="🧠"
                         items={['Akses Informasi', 'Evaluasi Informasi', 'Literasi Ekonomi', 'Literasi Hukum', 'Literasi Risiko']}
                         onTopicChange={handleTopicChange}
