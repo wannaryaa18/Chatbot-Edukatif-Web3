@@ -2,7 +2,7 @@
 
 const { useState, useRef, useEffect } = React;
 
-// --- 1. KOMPONEN ICON & UI ASLI (TIDAK DIUBAH) ---
+// --- 1. KOMPONEN ICON & UI ASLI ---
 const Send = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -40,36 +40,40 @@ const X = () => (
     </svg>
 );
 
-// --- 2. KOMPONEN DIAGRAM VISUAL (BARU - DIDESAIN AGAR COCOK DENGAN TEMA AWAL) ---
+// --- 2. KOMPONEN DIAGRAM VISUAL (DIPERBAIKI AGAR TIDAK GEPENG) ---
 
 const DiagramFlow = ({ title, steps, color = "blue" }) => {
-    // Mapping warna agar sesuai tema ungu/biru
     const colors = {
         blue: "from-blue-500 to-indigo-600",
         green: "from-emerald-500 to-teal-600",
         purple: "from-purple-500 to-fuchsia-600",
         orange: "from-orange-500 to-red-600",
-        red: "from-red-500 to-pink-600"
+        red: "from-red-500 to-pink-600",
+        pink: "from-pink-500 to-rose-600"
     };
     
     return (
-        <div className="bg-gradient-to-br from-white to-slate-50 p-4 rounded-2xl border-2 border-purple-100 shadow-lg mt-4">
-            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-purple-100 pb-2">
+        <div className="bg-gradient-to-br from-white to-slate-50 p-6 rounded-2xl border-2 border-purple-100 shadow-lg mt-4 w-full">
+            <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-purple-100 pb-2">
                 <span className="text-xl">🔄</span> {title}
             </h3>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-2 relative">
+            {/* Added flex-wrap and gap handling for responsiveness */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 relative">
                 {steps.map((step, idx) => (
                     <React.Fragment key={idx}>
-                        <div className="flex flex-col items-center z-10 w-full group">
-                            <div className={`w-12 h-12 bg-gradient-to-br ${colors[color]} rounded-xl flex items-center justify-center text-white text-2xl shadow-md mb-2 transform transition-transform group-hover:scale-110`}>
+                        <div className="flex flex-col items-center z-10 w-full md:w-auto flex-1 group">
+                            <div className={`w-14 h-14 bg-gradient-to-br ${colors[color]} rounded-2xl flex items-center justify-center text-white text-3xl shadow-md mb-3 transform transition-transform group-hover:scale-110`}>
                                 {step.icon}
                             </div>
-                            <div className="text-[10px] font-bold text-gray-700 text-center bg-white px-2 py-1 rounded-lg border border-gray-200 w-full shadow-sm">
+                            <div className="text-xs font-bold text-gray-700 text-center bg-white px-3 py-2 rounded-xl border border-gray-200 w-full shadow-sm min-h-[40px] flex items-center justify-center">
                                 {step.label}
                             </div>
                         </div>
                         {idx < steps.length - 1 && (
-                            <div className="text-purple-300 text-xl font-bold">➜</div>
+                            <div className="hidden md:block text-purple-300 text-2xl font-bold transform -translate-y-4">➜</div>
+                        )}
+                         {idx < steps.length - 1 && (
+                            <div className="block md:hidden text-purple-300 text-2xl font-bold">⬇️</div>
                         )}
                     </React.Fragment>
                 ))}
@@ -79,40 +83,46 @@ const DiagramFlow = ({ title, steps, color = "blue" }) => {
 };
 
 const DiagramMindMap = ({ center, nodes, color = "purple" }) => {
+    // Increased container height and adjusted positioning to prevent squashing
     return (
-        <div className="bg-gradient-to-br from-white to-slate-50 p-4 rounded-2xl border-2 border-purple-100 shadow-lg mt-4 relative overflow-hidden">
-            <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-purple-100 pb-2 relative z-10">
+        <div className="bg-gradient-to-br from-white to-slate-50 p-5 rounded-2xl border-2 border-purple-100 shadow-lg mt-4 relative overflow-hidden w-full">
+            <h3 className="font-bold text-gray-800 mb-2 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-purple-100 pb-2 relative z-10">
                 <span className="text-xl">🧠</span> {center.title}
             </h3>
             
-            <div className="relative h-60 w-full flex items-center justify-center z-10">
-                 {/* Garis konektor CSS */}
+            {/* Height increased from h-60 to h-80 for breathing room */}
+            <div className="relative h-80 w-full flex items-center justify-center z-10 my-4">
+                 {/* CSS Connector Line */}
                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20">
-                    <div className="w-40 h-40 border-2 border-dashed border-purple-400 rounded-full animate-spin-slow"></div>
+                    <div className="w-56 h-56 border-2 border-dashed border-purple-400 rounded-full animate-spin-slow"></div>
                  </div>
 
-                {/* Center */}
-                <div className="absolute z-20 w-20 h-20 bg-gradient-to-br from-purple-600 to-indigo-700 rounded-full flex flex-col items-center justify-center text-white shadow-xl border-4 border-white">
-                    <span className="text-2xl mb-1">{center.icon}</span>
-                    <span className="text-[9px] font-bold uppercase">{center.label}</span>
+                {/* Center Node */}
+                <div className="absolute z-20 w-24 h-24 bg-gradient-to-br from-purple-600 to-indigo-700 rounded-full flex flex-col items-center justify-center text-white shadow-xl border-4 border-white transform transition-transform hover:scale-110">
+                    <span className="text-3xl mb-1">{center.icon}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">{center.label}</span>
                 </div>
 
-                {/* Nodes */}
-                <div className="absolute top-0 transform translate-y-1 flex flex-col items-center">
-                     <div className={`w-10 h-10 bg-${color}-100 rounded-lg flex items-center justify-center text-lg shadow-sm border border-${color}-200 bg-white`}>{nodes[0].icon}</div>
-                     <span className="text-[9px] font-bold text-center mt-1 bg-white px-2 py-0.5 rounded shadow-sm border border-gray-100">{nodes[0].label}</span>
+                {/* Nodes - Positioned with more distance */}
+                {/* Top */}
+                <div className="absolute top-0 flex flex-col items-center transform translate-y-2">
+                     <div className={`w-14 h-14 bg-${color}-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm border-2 border-${color}-200 bg-white`}>{nodes[0].icon}</div>
+                     <span className="text-[10px] font-bold text-center mt-2 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-100">{nodes[0].label}</span>
                 </div>
-                <div className="absolute right-4 flex flex-col items-center">
-                     <div className={`w-10 h-10 bg-${color}-100 rounded-lg flex items-center justify-center text-lg shadow-sm border border-${color}-200 bg-white`}>{nodes[1].icon}</div>
-                     <span className="text-[9px] font-bold text-center mt-1 bg-white px-2 py-0.5 rounded shadow-sm border border-gray-100">{nodes[1].label}</span>
+                {/* Right */}
+                <div className="absolute right-0 md:right-8 flex flex-col items-center">
+                     <div className={`w-14 h-14 bg-${color}-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm border-2 border-${color}-200 bg-white`}>{nodes[1].icon}</div>
+                     <span className="text-[10px] font-bold text-center mt-2 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-100">{nodes[1].label}</span>
                 </div>
-                <div className="absolute bottom-0 transform -translate-y-1 flex flex-col items-center">
-                     <div className={`w-10 h-10 bg-${color}-100 rounded-lg flex items-center justify-center text-lg shadow-sm border border-${color}-200 bg-white`}>{nodes[2].icon}</div>
-                     <span className="text-[9px] font-bold text-center mt-1 bg-white px-2 py-0.5 rounded shadow-sm border border-gray-100">{nodes[2].label}</span>
+                {/* Bottom */}
+                <div className="absolute bottom-0 flex flex-col items-center transform -translate-y-2">
+                     <div className={`w-14 h-14 bg-${color}-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm border-2 border-${color}-200 bg-white`}>{nodes[2].icon}</div>
+                     <span className="text-[10px] font-bold text-center mt-2 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-100">{nodes[2].label}</span>
                 </div>
-                <div className="absolute left-4 flex flex-col items-center">
-                     <div className={`w-10 h-10 bg-${color}-100 rounded-lg flex items-center justify-center text-lg shadow-sm border border-${color}-200 bg-white`}>{nodes[3].icon}</div>
-                     <span className="text-[9px] font-bold text-center mt-1 bg-white px-2 py-0.5 rounded shadow-sm border border-gray-100">{nodes[3].label}</span>
+                {/* Left */}
+                <div className="absolute left-0 md:left-8 flex flex-col items-center">
+                     <div className={`w-14 h-14 bg-${color}-100 rounded-2xl flex items-center justify-center text-2xl shadow-sm border-2 border-${color}-200 bg-white`}>{nodes[3].icon}</div>
+                     <span className="text-[10px] font-bold text-center mt-2 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-100">{nodes[3].label}</span>
                 </div>
             </div>
         </div>
@@ -121,30 +131,32 @@ const DiagramMindMap = ({ center, nodes, color = "purple" }) => {
 
 const DiagramComparison = ({ left, right, title }) => {
     return (
-        <div className="bg-gradient-to-br from-white to-slate-50 p-4 rounded-2xl border-2 border-purple-100 shadow-lg mt-4">
-             <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-purple-100 pb-2">
+        <div className="bg-gradient-to-br from-white to-slate-50 p-5 rounded-2xl border-2 border-purple-100 shadow-lg mt-4 w-full">
+             <h3 className="font-bold text-gray-800 mb-5 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-purple-100 pb-2">
                 <span className="text-xl">⚖️</span> {title}
             </h3>
-            <div className="flex gap-2">
-                <div className="flex-1 bg-red-50 rounded-xl p-3 border border-red-100">
-                    <div className="text-center text-2xl mb-2">{left.icon}</div>
-                    <div className="font-bold text-red-600 text-center text-xs mb-2 uppercase">{left.title}</div>
-                    <ul className="space-y-1">
+            <div className="flex flex-row gap-3 md:gap-4">
+                <div className="flex-1 bg-red-50 rounded-2xl p-4 border border-red-100 flex flex-col h-full min-h-[180px]">
+                    <div className="text-center text-4xl mb-3">{left.icon}</div>
+                    <div className="font-bold text-red-600 text-center text-sm mb-3 uppercase tracking-wide bg-white rounded-lg py-1 border border-red-100 mx-auto w-full">{left.title}</div>
+                    <ul className="space-y-2 flex-1">
                         {left.points.map((p, i) => (
-                            <li key={i} className="flex gap-1 text-[10px] text-gray-600 leading-tight">
-                                <span className="text-red-500 font-bold">x</span> {p}
+                            <li key={i} className="flex gap-2 text-xs text-gray-700 leading-tight items-start">
+                                <span className="text-red-500 font-bold mt-0.5">x</span> 
+                                <span>{p}</span>
                             </li>
                         ))}
                     </ul>
                 </div>
-                <div className="flex items-center justify-center text-gray-300 font-bold text-xs">VS</div>
-                <div className="flex-1 bg-green-50 rounded-xl p-3 border border-green-100">
-                    <div className="text-center text-2xl mb-2">{right.icon}</div>
-                    <div className="font-bold text-green-600 text-center text-xs mb-2 uppercase">{right.title}</div>
-                    <ul className="space-y-1">
+                <div className="flex items-center justify-center text-gray-300 font-black text-sm italic">VS</div>
+                <div className="flex-1 bg-green-50 rounded-2xl p-4 border border-green-100 flex flex-col h-full min-h-[180px]">
+                    <div className="text-center text-4xl mb-3">{right.icon}</div>
+                    <div className="font-bold text-green-600 text-center text-sm mb-3 uppercase tracking-wide bg-white rounded-lg py-1 border border-green-100 mx-auto w-full">{right.title}</div>
+                    <ul className="space-y-2 flex-1">
                         {right.points.map((p, i) => (
-                            <li key={i} className="flex gap-1 text-[10px] text-gray-600 leading-tight">
-                                <span className="text-green-500 font-bold">✓</span> {p}
+                            <li key={i} className="flex gap-2 text-xs text-gray-700 leading-tight items-start">
+                                <span className="text-green-500 font-bold mt-0.5">✓</span> 
+                                <span>{p}</span>
                             </li>
                         ))}
                     </ul>
@@ -156,18 +168,19 @@ const DiagramComparison = ({ left, right, title }) => {
 
 const DiagramCycle = ({ title, steps }) => {
     return (
-        <div className="bg-gradient-to-br from-white to-slate-50 p-4 rounded-2xl border-2 border-purple-100 shadow-lg mt-4">
-            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-purple-100 pb-2">
+        <div className="bg-gradient-to-br from-white to-slate-50 p-6 rounded-2xl border-2 border-purple-100 shadow-lg mt-4 w-full">
+            <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2 text-sm uppercase tracking-wide border-b border-purple-100 pb-2">
                 <span className="text-xl">🔁</span> {title}
             </h3>
-            <div className="grid grid-cols-2 gap-3 relative">
+            <div className="grid grid-cols-2 gap-6 relative p-4">
+                 {/* Increased spinner size for better fitting */}
                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                     <div className="w-24 h-24 border-4 border-blue-100 rounded-full border-t-blue-500 animate-spin-slow opacity-50"></div>
+                     <div className="w-32 h-32 border-[6px] border-blue-100 rounded-full border-t-blue-500 animate-spin-slow opacity-40"></div>
                 </div>
                 {steps.map((step, idx) => (
-                    <div key={idx} className="bg-white border border-blue-100 p-2 rounded-xl z-10 flex flex-col items-center text-center shadow-sm">
-                        <span className="text-xl mb-1">{step.icon}</span>
-                        <span className="text-[10px] font-bold text-gray-700">{step.label}</span>
+                    <div key={idx} className="bg-white border-2 border-blue-50 p-3 rounded-2xl z-10 flex flex-col items-center text-center shadow-sm transform transition-transform hover:scale-105">
+                        <span className="text-3xl mb-2">{step.icon}</span>
+                        <span className="text-xs font-bold text-gray-700">{step.label}</span>
                     </div>
                 ))}
             </div>
@@ -222,7 +235,7 @@ const SidebarSubmenu = ({ title, items, onTopicChange, icon }) => {
     );
 };
 
-// --- DATA TOPIK SESUAI PROPOSAL ---
+// --- DATA TOPIK ---
 const topicSuggestionMap = {
     'Umum': ['Apa itu Web3?', 'Apa itu Blockchain?', 'Coin vs Token?', 'Apa itu Proof-of-Stake?'],
     'Web3': ['Apa perbedaan Web2 dan Web3?', 'Apa keuntungan Web3?', 'Apa itu dApp?', 'Bagaimana cara mulai di Web3?'],
@@ -242,6 +255,22 @@ const topicSuggestionMap = {
     'Literasi Hukum': ['Apakah crypto legal di Indonesia?', 'Apa peran Bappebti?', 'Bagaimana aturan pajak crypto?', 'Apakah NFT dilindungi hak cipta?'],
     'Literasi Risiko': ['Bagaimana cara mengamankan Seed Phrase?', 'Apa itu serangan Phishing?', 'Apa risiko Impermanent Loss?', 'Tanda-tanda Rug Pull?']
 };
+
+// --- LOGIKA SARAN BERDASARKAN KONTEKS (BARU) ---
+const contextualSuggestions = {
+    'ekonomi': ['Apa itu Supply dan Demand?', 'Apa itu Market Cap?', 'Mengapa harga crypto naik turun?', 'Apa itu Inflasi token?'],
+    'tokenomics': ['Apa itu Supply dan Demand?', 'Apa itu Market Cap?', 'Apa itu Vesting Schedule?', 'Apa itu Burn mechanism?'],
+    'investasi': ['Apa itu DCA (Dollar Cost Averaging)?', 'Kapan waktu terbaik beli crypto?', 'Apa bedanya Trading dan HODL?', 'Manajemen risiko crypto?'],
+    'hukum': ['Apakah crypto haram?', 'Berapa pajak PPN crypto?', 'Daftar aset legal Bappebti?', 'Apakah mining legal?'],
+    'legal': ['Apakah crypto haram?', 'Berapa pajak PPN crypto?', 'Daftar aset legal Bappebti?', 'Apakah mining legal?'],
+    'risk': ['Apa itu Rug Pull?', 'Bagaimana mengenali skema Ponzi?', 'Amankah simpan di Exchange?', 'Apa itu 2FA?'],
+    'risiko': ['Apa itu Rug Pull?', 'Bagaimana mengenali skema Ponzi?', 'Amankah simpan di Exchange?', 'Apa itu 2FA?'],
+    'nft': ['Apa itu Minting?', 'Marketplace NFT terbaik?', 'Apa guna NFT di Game?', 'Kenapa NFT mahal?'],
+    'mining': ['Berapa biaya listrik mining?', 'Apa itu Hashrate?', 'Apa itu Mining Pool?', 'Apakah laptop bisa mining?'],
+    'wallet': ['Apa itu Metamask?', 'Bagaimana jika lupa password wallet?', 'Apa itu Hardware Wallet?', 'Cara transfer antar wallet?'],
+    'defi': ['Apa itu Yield Farming?', 'Apa itu Staking?', 'Apa itu DEX?', 'Apa risiko DeFi?']
+};
+
 
 const Web3Chatbot = () => {
     // State asli
@@ -701,7 +730,7 @@ const Web3Chatbot = () => {
         return newArray;
     };
     
-    // Suggestion logic (asli)
+    // Suggestion logic (UPDATED - Context Aware)
     const masterSuggestionList = [
         'Apa itu Web3?', 'Bagaimana cara kerja blockchain?', 'Apa itu cryptocurrency?',
         'Apa perbedaan Web2 dan Web3?', 'Apa itu NFT?', 'Apa itu dApp?',
@@ -711,7 +740,16 @@ const Web3Chatbot = () => {
     ];
 
     const generateNewSuggestions = (botReply, lastQuestion, currentSuggestions) => {
-        // Simple randomization logic for suggestions
+        const textToCheck = (lastQuestion + " " + botReply).toLowerCase();
+        
+        // 1. Cek Contextual Suggestion
+        for (const [key, questions] of Object.entries(contextualSuggestions)) {
+            if (textToCheck.includes(key)) {
+                return shuffleArray(questions).slice(0, 4);
+            }
+        }
+
+        // 2. Fallback: Filter dari Master List
         let freshSuggestions = masterSuggestionList.filter(s => s !== lastQuestion);
         return shuffleArray(freshSuggestions).slice(0, 4);
     };
@@ -772,6 +810,7 @@ const Web3Chatbot = () => {
                 visual: visual 
             }]);
             
+            // Generate Context Aware Suggestions
             const newSuggestions = generateNewSuggestions(botReply, userMessage, suggestions);
             setSuggestions(newSuggestions);
             
@@ -950,7 +989,7 @@ const Web3Chatbot = () => {
                             <div className="flex items-center gap-2 mb-3">
                                 <span className="text-sm font-bold text-purple-600">💡</span>
                                 <div className="text-xs font-bold text-gray-700">
-                                    {activeTopic === 'Umum' ? 'Pertanyaan yang mungkin kamu suka:' : `Pertanyaan tentang ${activeTopic}:`}
+                                    Saran pertanyaan terkait:
                                 </div>
                             </div>
                             <div className="flex flex-wrap gap-2">
