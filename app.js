@@ -1040,25 +1040,21 @@ const Web3Chatbot = () => {
         'Bagaimana cara mulai di Web3?'
     ];
 
-
-    const generateNewSuggestions = (botReply, lastQuestion, currentSuggestions, activeTopic) => {
+    const generateNewSuggestions = (botReply, lastQuestion, currentSuggestions) => {
         const lowerReply = botReply.toLowerCase();
         const lowerLastQuestion = lastQuestion.toLowerCase();
-        
-        // 1. Cari saran berdasarkan Keyword di Jawaban Bot (Contextual)
+        const lowerCurrentSuggestions = currentSuggestions.map(s => s.toLowerCase());
+
         let relevantSuggestions = [];
+
         const keywordMap = {
-            'blockchain': ['Bagaimana cara kerja blockchain?', 'Apa itu desentralisasi?'],
-            'nft': ['Apa itu NFT?', 'Bagaimana cara membuat NFT?', 'Di mana jual beli NFT?'],
-            'dao': ['Apa itu DAO?', 'Bagaimana cara voting di DAO?'],
-            'defi': ['Apa itu DeFi?', 'Apa bedanya DeFi dan Bank?', 'Apa risiko DeFi?'],
-            'mining': ['Apa itu Proof-of-Work?', 'Apa itu Bitcoin Halving?'],
-            'staking': ['Apa itu Proof-of-Stake?', 'Apa keuntungan Staking?'],
-            'wallet': ['Apa itu Seed Phrase?', 'Bedanya Hot vs Cold Wallet?'],
-            'smart contract': ['Apa kegunaan smart contract?', 'Contoh smart contract?'],
-            'ekonomi': ['Apa itu Tokenomics?', 'Apa dampak ekonomi Blockchain?', 'Investasi vs Trading?'],
-            'hukum': ['Apakah crypto legal?', 'Bagaimana pajak crypto?'],
-            'risiko': ['Apa tanda rug pull?', 'Cara hindari phishing?']
+            'blockchain': ['Bagaimana cara kerja blockchain?', 'Apa itu smart contract?'],
+            'nft': ['Apa itu NFT?', 'Bagaimana cara membuat NFT?'],
+            'dao': ['Apa itu DAO?', 'Contoh DAO terkenal?'],
+            'defi': ['Apa itu DeFi?', 'Apa resiko DeFi?'],
+            'mining': ['Apa itu mining (Proof-of-Work)?', 'Apakah mining boros energi?'],
+            'staking': ['Apa itu staking (Proof-of-Stake)?', 'Apa resiko staking?'],
+            'wallet': ['Apa itu wallet crypto?', 'Bagaimana cara mengamankan wallet?']
         };
 
         for (const keyword in keywordMap) {
@@ -1066,45 +1062,31 @@ const Web3Chatbot = () => {
                 relevantSuggestions.push(...keywordMap[keyword]);
             }
         }
+        
+        let freshSuggestions = masterSuggestionList.filter(suggestion => {
+            const lowerSuggestion = suggestion.toLowerCase();
+            return lowerSuggestion !== lowerLastQuestion && !lowerCurrentSuggestions.includes(lowerSuggestion);
+        });
 
-        // 2. PRIORITAS UTAMA: Ambil saran dari Topik yang sedang Aktif (Active Topic)
-        // Jika user sedang di menu 'Literasi Ekonomi', paksa saran dari list itu.
-        if (activeTopic && topicSuggestionMap[activeTopic]) {
-            const topicQuestions = topicSuggestionMap[activeTopic];
-            // Ambil 2-3 pertanyaan dari topik yang sedang aktif
-            relevantSuggestions.unshift(...topicQuestions); 
-        }
-        
-        // 3. Gabungkan dengan Master List sebagai cadangan
-        let potentialSuggestions = [...relevantSuggestions, ...masterSuggestionList];
-        
-        // 4. Filter: Hapus duplikat, hapus pertanyaan terakhir, dan hapus saran yang sedang tampil
-        let uniqueSuggestions = [];
-        const seen = new Set();
-        
-        // Masukkan pertanyaan terakhir & saran saat ini ke 'seen' agar tidak muncul lagi
-        seen.add(lowerLastQuestion);
-        currentSuggestions.forEach(s => seen.add(s.toLowerCase()));
+        let newSuggestions = [];
+        let uniqueRelevant = [...new Set(relevantSuggestions)];
+        uniqueRelevant = uniqueRelevant.filter(suggestion => {
+                 const lowerSuggestion = suggestion.toLowerCase();
+                 return lowerSuggestion !== lowerLastQuestion && !lowerCurrentSuggestions.includes(lowerSuggestion);
+        });
 
-        for (const item of potentialSuggestions) {
-            const lowerItem = item.toLowerCase();
-            if (!seen.has(lowerItem)) {
-                uniqueSuggestions.push(item);
-                seen.add(lowerItem);
+        newSuggestions.push(...uniqueRelevant);
+        const shuffledFreshList = shuffleArray(freshSuggestions);
+        let i = 0;
+        while (newSuggestions.length < 4 && i < shuffledFreshList.length) {
+            const randomSuggestion = shuffledFreshList[i];
+            if (!newSuggestions.map(s => s.toLowerCase()).includes(randomSuggestion.toLowerCase())) {
+                newSuggestions.push(randomSuggestion);
             }
+            i++;
         }
 
-        // 5. Acak hasilnya agar tidak membosankan, tapi tetap relevan
-        // Kita acak sedikit, tapi utamakan yang relevan di atas
-        const finalSuggestions = uniqueSuggestions.slice(0, 4);
-        
-        // Jika kurang dari 4, ambil dari master list yang belum ada
-        if (finalSuggestions.length < 4) {
-            const remaining = shuffleArray(masterSuggestionList).filter(s => !seen.has(s.toLowerCase()));
-            finalSuggestions.push(...remaining.slice(0, 4 - finalSuggestions.length));
-        }
-
-        return finalSuggestions;
+        return newSuggestions.slice(0, 4);
     };
 
     const sendMessage = async (messageText) => {
@@ -1164,8 +1146,7 @@ const Web3Chatbot = () => {
                 visual: visual
             }]);
             
-         
-const newSuggestions = generateNewSuggestions(botReply, userMessage, suggestions, activeTopic);
+            const newSuggestions = generateNewSuggestions(botReply, userMessage, suggestions);
             setSuggestions(newSuggestions);
             
         } catch (error) {
