@@ -1040,6 +1040,7 @@ const Web3Chatbot = () => {
         'Bagaimana cara mulai di Web3?'
     ];
 
+  // --- UPDATE FUNGSI INI (VERSI CONTEXTUAL PINTAR) ---
     const generateNewSuggestions = (botReply, fullHistory, currentSuggestions, activeTopic) => {
         const lowerReply = botReply.toLowerCase();
         
@@ -1113,7 +1114,9 @@ const Web3Chatbot = () => {
         for (const question of candidates) {
             const cleanQ = question.toLowerCase().trim();
 
-        
+            // Syarat masuk:
+            // 1. Belum pernah ditanya user (askedQuestions)
+            // 2. Belum ada di daftar kandidat terpilih (seenCandidates)
             const isAlreadyAsked = askedQuestions.has(cleanQ);
             const isDuplicate = seenCandidates.has(cleanQ);
             
@@ -1126,7 +1129,8 @@ const Web3Chatbot = () => {
             if (finalSuggestions.length >= 4) break;
         }
 
-  
+        // 7. FALLBACK: Kalau saran masih kurang dari 2 (misal semua sudah ditanya)
+        //    Ambil acak dari master list
         if (finalSuggestions.length < 2) {
             const remaining = shuffleArray(masterSuggestionList).filter(q => !askedQuestions.has(q.toLowerCase().trim()));
             finalSuggestions.push(...remaining.slice(0, 4 - finalSuggestions.length));
@@ -1134,16 +1138,19 @@ const Web3Chatbot = () => {
 
         return finalSuggestions;
     };
-    const sendMessage = async (messageText) => {
+
+const sendMessage = async (messageText) => {
         const userMessage = messageText || input;
         if (!userMessage.trim()) return;
         
+        // 1. Tambahkan pesan user ke UI sementara
         setMessages(prev => [...prev, { role: 'user', content: userMessage, visual: null }]);
         setInput('');
         setIsLoading(true);
-        setSuggestions([]);
+        setSuggestions([]); // Kosongkan saran saat loading
 
         try {
+            // Persiapan data untuk dikirim ke API (ambil 5 pesan terakhir saja biar hemat token)
             const cleanHistory = messages.slice(-5).map(msg => ({
                 role: msg.role,
                 content: msg.content
@@ -1154,6 +1161,7 @@ const Web3Chatbot = () => {
                 { role: 'user', content: userMessage }
             ];
 
+            // Panggil API (Simulasi atau Real)
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -1172,6 +1180,7 @@ const Web3Chatbot = () => {
             const data = await response.json();
             let botReply = data.choices[0].message.content;
 
+            // Bersihkan format markdown
             botReply = botReply.replace(/\*\*(.*?)\*\*/g, '$1'); 
             botReply = botReply.replace(/\*(.*?)\*/g, '$1');   
             botReply = botReply.replace(/`([^`]+)`/g, '$1'); 
@@ -1180,18 +1189,38 @@ const Web3Chatbot = () => {
             botReply = botReply.replace(/Contoh:/gi, '');
             botReply = botReply.replace(/\n/g, '<br />');
 
+            // Generate Visual jika relevan
             let visual = null;
-            if (botReply && !botReply.toLowerCase().includes("hmm, pertanyaan itu sepertinya jauh banget")) {
+            if (botReply && !botReply.toLowerCase().includes("hmm")) {
                  visual = generateVisual(userMessage);
             }
             
-            setMessages(prev => [...prev, { 
+            // Buat object pesan bot baru
+            const newBotMessage = { 
                 role: 'assistant', 
                 content: botReply,
                 visual: visual
-            }]);
+            };
+
+            // Masukkan pesan bot ke UI
+            setMessages(prev => [...prev, newBotMessage]);
             
-            const newSuggestions = generateNewSuggestions(botReply, userMessage, suggestions);
+            // --- PERBAIKAN UTAMA DI SINI ---
+            // Kita harus menyusun 'Full History' manual untuk dikirim ke generator saran
+            // Karena state 'messages' belum tentu sudah terupdate di baris ini (asynchronous)
+            const fullHistoryForLogic = [
+                ...messages, 
+                { role: 'user', content: userMessage }, // Pesan user yg baru
+                newBotMessage // Pesan bot yg baru
+            ];
+            
+            // Panggil fungsi saran dengan Parameter yang BENAR:
+            // 1. Jawaban Bot (String)
+            // 2. Full History (Array) -> INI YANG TADI ERROR
+            // 3. Saran Saat Ini (Array)
+            // 4. Topik Aktif (String)
+            const newSuggestions = generateNewSuggestions(botReply, fullHistoryForLogic, suggestions, activeTopic);
+            
             setSuggestions(newSuggestions);
             
         } catch (error) {
@@ -1201,6 +1230,7 @@ const Web3Chatbot = () => {
                 content: `❌ Maaf, terjadi kesalahan: ${error.message}. Coba refresh halaman.`,
                 visual: null 
             }]);
+            // Jika error, kembalikan ke saran umum
             setSuggestions(topicSuggestionMap['Umum']);
         } finally {
             setIsLoading(false);
