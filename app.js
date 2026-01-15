@@ -1,8 +1,8 @@
-// File: app.js (Frontend)
+// File: app.js (Frontend) - Updated with BLS 5 Dimensions
 
-const { useState, useRef, useEffect, useMemo } = React;
+const { useState, useRef, useEffect } = React;
 
-// --- 1. KOMPONEN ICON & UI DASAR ---
+// --- ICONS & SVGS ---
 const Send = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -40,179 +40,42 @@ const X = () => (
     </svg>
 );
 
-// --- 2. KOMPONEN DIAGRAM VISUAL (RESPONSIF MOBILE/DESKTOP) ---
-
-// Helper warna
-const getGradient = (color) => {
-    const maps = {
-        blue: "from-blue-500 to-indigo-600",
-        green: "from-emerald-500 to-teal-600",
-        purple: "from-purple-500 to-fuchsia-600",
-        orange: "from-orange-500 to-red-600",
-        red: "from-red-500 to-pink-600",
-        pink: "from-pink-500 to-rose-500",
-        gray: "from-slate-500 to-gray-600"
-    };
-    return maps[color] || maps.blue;
-};
-
-// Diagram Alur (Flow): Vertikal di HP, Horizontal di Desktop
-const DiagramFlow = ({ title, steps, color = "blue" }) => {
-    return (
-        <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-lg mt-3 w-full">
-            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-xs uppercase tracking-wider border-b border-gray-100 pb-2">
-                <span className="text-lg">🔄</span> {title}
-            </h3>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-2 relative">
-                {steps.map((step, idx) => (
-                    <React.Fragment key={idx}>
-                        <div className="flex flex-row md:flex-col items-center gap-3 md:gap-2 w-full md:w-auto bg-gray-50 md:bg-transparent p-2 md:p-0 rounded-xl">
-                            <div className={`w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br ${getGradient(color)} rounded-xl flex items-center justify-center text-white text-xl shadow-md shrink-0`}>
-                                {step.icon}
-                            </div>
-                            <div className="text-xs font-bold text-gray-700 text-left md:text-center">
-                                {step.label}
-                            </div>
-                        </div>
-                        {idx < steps.length - 1 && (
-                            // Panah: Ke bawah di HP, Ke kanan di Desktop
-                            <div className="text-gray-300 text-lg md:rotate-0 rotate-90 my-[-5px] md:my-0">➜</div>
-                        )}
-                    </React.Fragment>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-// Diagram MindMap: Grid Layout (Aman untuk Mobile)
-const DiagramMindMap = ({ center, nodes, color = "purple" }) => {
-    return (
-        <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-lg mt-3 w-full relative overflow-hidden">
-            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-xs uppercase tracking-wider border-b border-gray-100 pb-2 relative z-10">
-                <span className="text-lg">🧠</span> {center.title}
-            </h3>
-            
-            <div className="flex flex-col items-center justify-center relative z-10 gap-4">
-                {/* Center Node */}
-                <div className={`w-20 h-20 bg-gradient-to-br ${getGradient(color)} rounded-full flex flex-col items-center justify-center text-white shadow-xl border-4 border-white z-20`}>
-                    <span className="text-2xl mb-0.5">{center.icon}</span>
-                    <span className="text-[9px] font-bold uppercase tracking-wide">{center.label}</span>
-                </div>
-
-                {/* Branches using Grid */}
-                <div className="grid grid-cols-2 gap-3 w-full">
-                    {nodes.map((node, idx) => (
-                        <div key={idx} className="flex flex-col items-center bg-slate-50 p-2 rounded-xl border border-slate-100 relative">
-                             {/* Line connector simulation */}
-                             <div className="absolute top-[-12px] left-1/2 w-0.5 h-3 bg-gray-200 -z-10"></div>
-                             
-                             <div className={`w-8 h-8 bg-white rounded-lg flex items-center justify-center text-lg shadow-sm border border-gray-200 mb-1`}>
-                                {node.icon}
-                             </div>
-                             <span className="text-[10px] font-bold text-center text-gray-600 leading-tight">
-                                {node.label}
-                             </span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// Diagram Perbandingan: Stack di HP, Side-by-Side di Desktop
-const DiagramComparison = ({ left, right, title }) => {
-    return (
-        <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-lg mt-3 w-full">
-             <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-xs uppercase tracking-wider border-b border-gray-100 pb-2">
-                <span className="text-lg">⚖️</span> {title}
-            </h3>
-            <div className="flex flex-col md:flex-row gap-3">
-                {/* Kiri */}
-                <div className="flex-1 bg-red-50 rounded-xl p-3 border border-red-100 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-1 opacity-10 text-4xl">❌</div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <span className="text-2xl">{left.icon}</span>
-                        <div className="font-bold text-red-600 text-xs uppercase">{left.title}</div>
-                    </div>
-                    <ul className="space-y-1.5">
-                        {left.points.map((p, i) => (
-                            <li key={i} className="flex items-start gap-1.5 text-[11px] text-gray-700 leading-tight">
-                                <span className="text-red-500 font-bold mt-0.5">×</span> {p}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                <div className="flex items-center justify-center text-gray-400 font-bold text-xs bg-gray-100 rounded-full w-8 h-8 self-center shrink-0">VS</div>
-
-                {/* Kanan */}
-                <div className="flex-1 bg-green-50 rounded-xl p-3 border border-green-100 relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-1 opacity-10 text-4xl">✅</div>
-                    <div className="flex items-center gap-2 mb-2">
-                        <span className="text-2xl">{right.icon}</span>
-                        <div className="font-bold text-green-600 text-xs uppercase">{right.title}</div>
-                    </div>
-                    <ul className="space-y-1.5">
-                        {right.points.map((p, i) => (
-                            <li key={i} className="flex items-start gap-1.5 text-[11px] text-gray-700 leading-tight">
-                                <span className="text-green-500 font-bold mt-0.5">✓</span> {p}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// Diagram Siklus: Grid Box Simple
-const DiagramCycle = ({ title, steps }) => {
-    return (
-        <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-lg mt-3 w-full">
-            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2 text-xs uppercase tracking-wider border-b border-gray-100 pb-2">
-                <span className="text-lg">🔁</span> {title}
-            </h3>
-            <div className="grid grid-cols-2 gap-3 relative">
-                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                     <div className="w-16 h-16 border-2 border-dashed border-blue-200 rounded-full animate-spin-slow opacity-60"></div>
-                </div>
-                {steps.map((step, idx) => (
-                    <div key={idx} className="bg-slate-50 border border-slate-100 p-2 rounded-xl z-10 flex flex-col items-center text-center shadow-sm">
-                        <span className="text-xl mb-1">{step.icon}</span>
-                        <span className="text-[10px] font-bold text-gray-700">{step.label}</span>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
 const SidebarSubmenu = ({ title, items, onTopicChange, icon }) => {
     const [isOpen, setIsOpen] = useState(true);
     
+    const ChevronDown = () => (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+    );
+
+    const ChevronRight = () => (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    );
+
     return (
         <div className="mb-4">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex justify-between items-center text-xs font-bold text-gray-700 uppercase tracking-wider mb-2 focus:outline-none hover:text-purple-600 transition-colors group py-1"
+                className="w-full flex justify-between items-center text-xs font-bold text-gray-700 uppercase tracking-wider mb-3 focus:outline-none hover:text-purple-600 transition-colors group"
             >
                 <div className="flex items-center gap-2">
-                    <span className="text-base">{icon}</span>
+                    <span className="text-lg">{icon}</span>
                     <span>{title}</span>
                 </div>
-                <span className={`transform transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}>
-                    ▼
+                <span className="transform transition-transform duration-200 group-hover:scale-110">
+                    {isOpen ? <ChevronDown /> : <ChevronRight />}
                 </span>
             </button>
             {isOpen && (
-                <div className="space-y-1 ml-1 pl-2 border-l-2 border-gray-100">
+                <div className="space-y-1">
                     {items.map((topic, idx) => (
                         <button
                             key={idx}
                             onClick={() => onTopicChange(topic)}
-                            className="w-full text-left px-3 py-2 rounded-lg hover:bg-purple-50 text-xs text-gray-600 hover:text-purple-700 transition-all font-medium truncate"
+                            className="w-full text-left px-4 py-2.5 rounded-xl hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 text-sm text-gray-700 hover:text-purple-600 transition-all font-medium hover:shadow-sm"
                         >
                             {topic}
                         </button>
@@ -223,81 +86,72 @@ const SidebarSubmenu = ({ title, items, onTopicChange, icon }) => {
     );
 };
 
-// --- DATA TOPIK & LOGIKA SARAN PINTAR (CONTEXT AWARE) ---
-
-const contextMappings = {
-    'Web3_Intro': {
-        keywords: ['web3', 'internet', 'masa depan', 'beda web2'],
-        suggestions: ['Apa perbedaan Web2 dan Web3?', 'Apa keuntungan Web3?', 'Bagaimana cara mulai di Web3?']
-    },
-    'Blockchain_Tech': {
-        keywords: ['blockchain', 'rantai', 'blok', 'teknologi', 'data'],
-        suggestions: ['Bagaimana cara kerja blockchain?', 'Apakah blockchain aman?', 'Apa itu desentralisasi?']
-    },
-    'Economy_Token': {
-        keywords: ['ekonomi', 'uang', 'cuan', 'profit', 'harga', 'market', 'investasi', 'tokenomics', 'supply', 'demand', 'inflasi', 'deflasi'],
-        suggestions: ['Apa itu Tokenomics?', 'Apa bedanya Coin dan Token?', 'Mengapa harga crypto naik turun?', 'Apa itu Market Cap?']
-    },
-    'DeFi': {
-        keywords: ['defi', 'bank', 'pinjam', 'bunga', 'farming', 'pool', 'liquidity'],
-        suggestions: ['Apa itu DeFi?', 'Apa risiko Yield Farming?', 'Bagaimana cara kerja Liquidity Pool?', 'Beda CEX dan DEX?']
-    },
-    'NFT': {
-        keywords: ['nft', 'gambar', 'seni', 'koleksi', 'game', 'mint'],
-        suggestions: ['Cara membuat NFT?', 'Kenapa NFT mahal?', 'Apa kegunaan NFT selain seni?', 'Di mana jual beli NFT?']
-    },
-    'Security': {
-        keywords: ['aman', 'scam', 'tipu', 'hack', 'phishing', 'rug pull', 'kunci', 'seed', 'password'],
-        suggestions: ['Bagaimana mengamankan Wallet?', 'Apa ciri-ciri penipuan crypto?', 'Apa itu Seed Phrase?', 'Apa itu Cold Wallet?']
-    },
-    'Legal': {
-        keywords: ['hukum', 'legal', 'ilegal', 'pajak', 'bappebti', 'pemerintah', 'aturan'],
-        suggestions: ['Apakah crypto legal di Indonesia?', 'Berapa pajak crypto?', 'Apa peran Bappebti?', 'Crypto haram atau halal?']
-    },
-    'Mining_Staking': {
-        keywords: ['mining', 'staking', 'tambang', 'listrik', 'validasi', 'proof'],
-        suggestions: ['Apa bedanya Mining dan Staking?', 'Apa itu Proof of Work?', 'Apakah mining boros listrik?', 'Cara mulai staking?']
-    }
+// --- DATA: Topic Suggestions ---
+const topicSuggestionMap = {
+    'Umum': [
+        'Apa itu Web3?',
+        'Apa itu Blockchain?',
+        'Apa bedanya Coin vs Token?',
+        'Apa itu Proof-of-Stake?'
+    ],
+    // --- 5 DIMENSI LITERASI WEB3 (NEW) ---
+    'Akses Informasi': [
+        'Di mana saya bisa belajar Web3 yang valid?',
+        'Bagaimana cara mencari info project crypto?',
+        'Apa itu Whitepaper?',
+        'Rekomendasi website berita Web3?'
+    ],
+    'Evaluasi Informasi': [
+        'Bagaimana cara tahu project scam?',
+        'Apa tanda-tanda rug pull?',
+        'Kenapa harus DYOR (Do Your Own Research)?',
+        'Bagaimana mengecek kredibilitas founder?'
+    ],
+    'Literasi Ekonomi': [
+        'Apa dampak ekonomi dari Blockchain?',
+        'Bagaimana cara kerja investasi crypto?',
+        'Apa itu Tokenomics?',
+        'Apa bedanya investasi saham dan crypto?'
+    ],
+    'Literasi Hukum': [
+        'Apakah crypto legal di Indonesia?',
+        'Apa aturan Bappebti soal crypto?',
+        'Apa itu pajak crypto?',
+        'Perlindungan hukum untuk investor crypto?'
+    ],
+    'Literasi Risiko': [
+        'Apa risiko terbesar di Web3?',
+        'Bagaimana agar wallet tidak di-hack?',
+        'Apa itu Phishing di crypto?',
+        'Risiko volatilitas harga crypto?'
+    ],
+    // --- EXISTING TOPICS ---
+    'Web3': ['Apa perbedaan Web2 dan Web3?', 'Apa keuntungan Web3?', 'Apa itu dApp?', 'Bagaimana cara mulai di Web3?'],
+    'Blockchain': ['Bagaimana cara kerja blockchain?', 'Apa itu desentralisasi?', 'Apa itu gas fee?', 'Apa itu Layer 2?'],
+    'NFT': ['Bagaimana cara membuat NFT?', 'Apa itu minting?', 'Apa kegunaan NFT selain seni?', 'Di mana orang menjual NFT?'],
+    'DeFi': ['Apa itu DeFi?', 'Apa itu liquidity pool?', 'Apa resiko pinjam meminjam di DeFi?', 'Contoh aplikasi DeFi?'],
+    'DAO': ['Bagaimana cara kerja DAO?', 'Bagaimana cara bergabung dengan DAO?', 'Apa itu token tata kelola?', 'Contoh DAO terkenal?'],
+    'Smart Contract': ['Bagaimana cara kerja smart contract?', 'Apa bahasa pemrograman untuk smart contract?', 'Apakah smart contract aman?', 'Contoh penggunaan smart contract?'],
+    'Mining': ['Apa itu Proof-of-Work?', 'Apakah mining boros energi?', 'Apa yang dibutuhkan untuk mining?', 'Kenapa mining sulit?'],
+    'Staking': ['Apa itu Proof-of-Stake?', 'Apa bedanya mining dan staking?', 'Apa resiko staking?', 'Bagaimana cara mulai staking?'],
+    'Wallet Crypto': ['Bagaimana cara mengamankan wallet?', 'Apa itu seed phrase?', 'Apa bedanya hot vs cold wallet?', 'Contoh aplikasi wallet?'],
+    'Coin vs Token': ['Apa contoh Coin?', 'Apa contoh Token?', 'Apa itu tokenomics?', 'Bagaimana token dibuat?']
 };
-
-const defaultSuggestions = ['Apa itu Web3?', 'Jelaskan Blockchain', 'Apa itu Bitcoin?', 'Cara beli Crypto?'];
-
-const detectContext = (text) => {
-    const lowerText = text.toLowerCase();
-    for (const [key, data] of Object.entries(contextMappings)) {
-        if (data.keywords.some(keyword => lowerText.includes(keyword))) {
-            return key;
-        }
-    }
-    return null; // Tidak ketemu konteks spesifik
-};
-
-const getSuggestionsByContext = (text) => {
-    const contextKey = detectContext(text);
-    if (contextKey) {
-        return contextMappings[contextKey].suggestions;
-    }
-    // Fallback: Random mix jika tidak ada konteks jelas
-    return defaultSuggestions;
-};
-
-
-// --- MAIN APP COMPONENT ---
 
 const Web3Chatbot = () => {
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
-            content: 'Halo! 👋 Saya Web3 Assistant. Saya bisa bantu jelaskan konsep Web3, Blockchain, hingga Ekonomi Crypto dengan bahasa simpel. Mau belajar apa hari ini?',
+            content: 'Halo! 👋 Selamat datang di Web3 Learning Hub! Saya siap membantu kamu memahami dunia Web3 dengan cara yang mudah dan menyenangkan. Mau mulai belajar dari mana nih?',
             visual: null
         }
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [suggestions, setSuggestions] = useState(defaultSuggestions);
+    const [suggestions, setSuggestions] = useState(topicSuggestionMap['Umum']);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const messagesEndRef = useRef(null);
-    const [activeTopic, setActiveTopic] = useState('Menu Utama');
+    const [activeTopic, setActiveTopic] = useState('Umum');
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -307,452 +161,541 @@ const Web3Chatbot = () => {
         scrollToBottom();
     }, [messages]);
 
-    // --- LOGIKA GENERATOR VISUAL (50 DIAGRAM) ---
+
+    // --- 1. Definisikan Tema Warna ---
+    const themes = {
+        purple: { bg: 'bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50', border: 'border-purple-200', iconBg: 'bg-gradient-to-br from-purple-500 to-indigo-600' },
+        green: { bg: 'bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50', border: 'border-green-200', iconBg: 'bg-gradient-to-br from-green-500 to-emerald-600' },
+        red: { bg: 'bg-gradient-to-br from-red-50 via-pink-50 to-rose-50', border: 'border-red-200', iconBg: 'bg-gradient-to-br from-red-500 to-pink-600' },
+        yellow: { bg: 'bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50', border: 'border-yellow-200', iconBg: 'bg-gradient-to-br from-yellow-500 to-amber-600' },
+        cyan: { bg: 'bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50', border: 'border-cyan-200', iconBg: 'bg-gradient-to-br from-cyan-500 to-sky-600' }
+    };
+    
+    // --- 2. Komponen Visual Generik ---
+    const GenericVisual = ({ icon, title, description, colorTheme }) => {
+         const theme = colorTheme || themes.purple; 
+         return (
+              <div className={`${theme.bg} p-6 rounded-2xl border-2 ${theme.border} mt-4 shadow-lg`}>
+                   <div className="flex items-center gap-3 mb-5">
+                        <div className={`w-10 h-10 ${theme.iconBg} rounded-xl flex items-center justify-center shadow-md floating`}>
+                             <span className="text-white text-xl">{icon}</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">{title}</h3>
+                   </div>
+                   <div className="bg-white p-5 rounded-2xl border-2 border-gray-200 shadow-inner">
+                        <p className="text-sm text-gray-700 leading-relaxed">{description}</p>
+                   </div>
+              </div>
+         );
+    };
+
+    // --- 3. Map Diagram Generik ---
+    const visualMap = {
+        'dapp': { icon: '📱', title: 'dApp (Aplikasi Terdesentralisasi)', description: 'Seperti aplikasi biasa (contoh: Twitter), tapi berjalan di atas blockchain. Tidak ada satu perusahaan yang mengontrolnya.', theme: themes.purple },
+        'dao': { icon: '🏛️', title: 'DAO (Organisasi Otonomi)', description: 'Sebuah organisasi atau "klub" yang diatur oleh kode dan voting. Anggota dengan token bisa ikut menentukan arah organisasi.', theme: themes.green },
+        'defi': { icon: '💸', title: 'DeFi (Keuangan Terdesentralisasi)', description: 'Layanan keuangan (pinjam, tabung, tukar) yang dibangun di atas blockchain, tanpa perlu bank tradisional.', theme: themes.cyan },
+        'smart contract': { icon: '📜', title: 'Smart Contract', description: 'Sebuah "kontrak" atau perjanjian digital yang ditulis dalam kode. Perjanjian ini otomatis berjalan jika syaratnya terpenuhi.', theme: themes.yellow },
+        'layer 2': { icon: 'LAYER 2', title: 'Layer 2 Solution', description: 'Sebuah "jalan tol" yang dibangun di atas blockchain utama (Layer 1) untuk membuat transaksi lebih cepat dan murah.', theme: themes.red },
+        'gas fee': { icon: '⛽', title: 'Gas Fee', description: 'Biaya "bensin" yang kamu bayar untuk melakukan transaksi atau menjalankan smart contract di blockchain.', theme: themes.yellow },
+        'metaverse': { icon: '🕶️', title: 'Metaverse', description: 'Dunia virtual 3D di mana orang bisa berkumpul, bermain, dan memiliki aset digital (seringkali sebagai NFT).', theme: themes.purple },
+        'tokenomics': { icon: '📊', title: 'Tokenomics', description: 'Ilmu ekonomi di balik sebuah token. Ini mengatur suplai, distribusi, dan kegunaan token tersebut.', theme: themes.cyan },
+        'seed phrase': { icon: '🤫', title: 'Seed Phrase', description: 'Kumpulan 12 atau 24 kata rahasia yang merupakan "kunci master" dari wallet crypto kamu. JANGAN PERNAH bagikan ini!', theme: themes.red },
+        'hot wallet': { icon: '📱', title: 'Hot Wallet', description: 'Wallet crypto yang terhubung ke internet (seperti aplikasi di HP atau ekstensi browser). Mudah dipakai, tapi lebih rentan.', theme: themes.yellow },
+        'cold wallet': { icon: '🧊', title: 'Cold Wallet', description: 'Wallet crypto yang tidak terhubung internet (seperti USB). Sangat aman untuk menyimpan aset jangka panjang.', theme: themes.cyan },
+        'desentralisasi': { icon: '🌐', title: 'Desentralisasi', description: 'Artinya, tidak ada satu pihak (seperti pemerintah atau perusahaan) yang punya kontrol penuh. Kekuatan disebar ke banyak pengguna.', theme: themes.green },
+        'bitcoin': { icon: '₿', title: 'Bitcoin', description: 'Mata uang crypto pertama dan paling terkenal. Diciptakan sebagai "emas digital" dan sistem pembayaran peer-to-peer.', theme: themes.yellow },
+        'ethereum': { icon: 'Ξ', title: 'Ethereum', description: 'Bukan cuma koin, Ethereum adalah platform untuk membangun dApp dan smart contract. Koinnya disebut Ether (ETH).', theme: themes.purple },
+        'altcoin': { icon: '🪙', title: 'Altcoin', description: 'Singkatan dari "Alternative Coin". Ini adalah sebutan untuk semua cryptocurrency selain Bitcoin.', theme: themes.green },
+        'stablecoin': { icon: '💵', title: 'Stablecoin', description: 'Jenis token yang harganya "dipatok" ke aset stabil, biasanya Dolar AS (seperti USDT atau USDC). Nilainya 1:1 dengan dolar.', theme: themes.cyan },
+        'minting': { icon: '✨', title: 'Minting (NFT)', description: 'Proses "mencetak" atau mendaftarkan sebuah karya digital (gambar, musik) ke blockchain untuk menjadikannya NFT.', theme: themes.purple },
+        'marketplace': { icon: '🛒', title: 'NFT Marketplace', description: 'Tempat jual-beli NFT, seperti "Tokopedia" atau "Shopee" tapi khusus untuk aset digital. Contoh: OpenSea.', theme: themes.cyan },
+        'liquidity pool': { icon: '🏊', title: 'Liquidity Pool (DeFi)', description: 'Sekumpulan token yang "dikunci" dalam smart contract di DeFi. Ini dipakai untuk memfasilitasi pertukaran token.', theme: themes.green },
+        'yield farming': { icon: '🧑‍🌾', title: 'Yield Farming (DeFi)', description: 'Cara untuk "menanam" crypto kamu di protokol DeFi untuk mendapatkan "panen" berupa token atau bunga tambahan.', theme: themes.yellow },
+        'airdrop': { icon: '🪂', title: 'Airdrop', description: 'Distribusi token gratis ke banyak alamat wallet. Biasanya sebagai strategi marketing untuk proyek baru.', theme: themes.purple },
+        'hash': { icon: '🔑', title: 'Hash', description: 'Sidik jari digital yang unik. Setiap blok di blockchain punya hash-nya sendiri, yang mengamankan data di dalamnya.', theme: themes.red },
+        'node': { icon: '🖥️', title: 'Node (Simpul)', description: 'Komputer yang terhubung ke jaringan blockchain. Node menyimpan dan memvalidasi salinan dari seluruh riwayat transaksi.', theme: themes.cyan },
+        'consensus': { icon: '🤝', title: 'Consensus Mechanism', description: 'Aturan main yang disepakati oleh jaringan (seperti Proof-of-Work atau Proof-of-Stake) untuk memvalidasi transaksi.', theme: themes.green },
+        'p2p': { icon: '🧑‍🤝‍🧑', title: 'Peer-to-Peer (P2P)', description: 'Jaringan di mana transaksi terjadi langsung antar pengguna, tanpa perantara seperti bank atau server pusat.', theme: themes.purple },
+        'solidity': { icon: '👨‍💻', title: 'Solidity', description: 'Bahasa pemrograman paling populer yang digunakan untuk menulis smart contract, terutama di blockchain Ethereum.', theme: themes.yellow },
+        'gas limit': { icon: '⛽', title: 'Gas Limit', description: 'Jumlah "bensin" maksimum yang kamu rela bayar untuk sebuah transaksi. Ini mencegah error yang menghabiskan semua koinmu.', theme: themes.red },
+        'gwei': { icon: '💧', title: 'Gwei', description: 'Satuan kecil dari Ether (ETH) yang digunakan untuk mengukur harga gas fee. Seperti "sen" untuk "rupiah".', theme: themes.cyan },
+        'private key': { icon: '🗝️', title: 'Private Key', description: 'Kunci rahasia (seperti password) yang membuktikan kepemilikan atas wallet-mu. JANGAN PERNAH bagikan ini.', theme: themes.red },
+        'public key': { icon: '📬', title: 'Public Key / Address', description: 'Alamat wallet-mu yang bisa kamu bagikan ke orang lain untuk menerima koin. Seperti "nomor rekening" bank.', theme: themes.green },
+        'oracle': { icon: '🔮', title: 'Blockchain Oracle', description: 'Layanan pihak ketiga yang menyediakan data dari "dunia nyata" (seperti cuaca atau harga saham) ke dalam smart contract.', theme: themes.purple },
+        'halving': { icon: '✂️', title: 'Bitcoin Halving', description: 'Peristiwa yang terjadi sekitar 4 tahun sekali di mana imbalan (reward) untuk mining Bitcoin dipotong setengah.', theme: themes.yellow },
+        'hard fork': { icon: '🍴', title: 'Hard Fork', description: 'Perubahan besar pada aturan blockchain yang tidak kompatibel dengan versi lama. Ini bisa membelah blockchain menjadi dua.', theme: themes.red },
+        'soft fork': { icon: '🥄', title: 'Soft Fork', description: 'Perubahan pada aturan blockchain yang masih kompatibel dengan versi lama. Seperti update software biasa.', theme: themes.green },
+        'kyc': { icon: '🆔', title: 'KYC (Know Your Customer)', description: 'Proses di mana platform (biasanya CEX) memverifikasi identitas kamu (pakai KTP/SIM) untuk mematuhi regulasi.', theme: themes.cyan },
+        'cex': { icon: '🏦', title: 'CEX (Centralized Exchange)', description: 'Platform jual-beli crypto yang terpusat, seperti bank. Contoh: Binance, Tokocrypto, Indodax.', theme: themes.cyan },
+        'dex': { icon: '⚖️', title: 'DEX (Decentralized Exchange)', description: 'Platform jual-beli crypto yang berjalan di atas blockchain (pakai smart contract), tidak ada bos pusat. Contoh: Uniswap.', theme: themes.purple },
+        'fud': { icon: '😨', title: 'FUD (Fear, Uncertainty, Doubt)', description: 'Istilah untuk penyebaran berita negatif atau rumor untuk membuat orang panik dan menjual aset mereka.', theme: themes.red },
+        'fomo': { icon: '🤩', title: 'FOMO (Fear Of Missing Out)', description: 'Rasa takut ketinggalan. Ini sering membuat orang membeli koin saat harganya sudah tinggi karena ikut-ikutan.', theme: themes.green },
+        'hodl': { icon: '🙌', title: 'HODL', description: 'Berasal dari salah ketik "Hold". Artinya menyimpan crypto kamu dalam jangka waktu lama, tidak peduli harga naik atau turun.', theme: themes.yellow },
+        'shill': { icon: '📢', title: 'Shill', description: 'Tindakan mempromosikan sebuah koin atau proyek secara berlebihan (seringkali karena dibayar) agar orang lain ikut membeli.', theme: themes.red },
+        'rug pull': { icon: '🏃‍♂️', title: 'Rug Pull', description: 'Penipuan di mana pembuat proyek crypto tiba-tiba kabur membawa semua uang investor.', theme: themes.red },
+        'dyor': { icon: '🧐', title: 'DYOR (Do Your Own Research)', description: 'Saran untuk selalu melakukan riset sendiri sebelum berinvestasi di proyek crypto apapun.', theme: themes.green }
+    };
+
+
+    // --- 4. Fungsi generateVisual dengan 5 DIMENSI BARU ---
     const generateVisual = (topic) => {
-        const t = topic.toLowerCase();
-
-        // 1. BLOCKCHAIN (FLOW)
-        if (t.includes('blockchain') || t.includes('rantai')) {
-            return <DiagramFlow title="Cara Kerja Blockchain" color="blue" steps={[
-                { icon: '📝', label: 'Transaksi' },
-                { icon: '📦', label: 'Masuk Blok' },
-                { icon: '🔗', label: 'Rantai Blok' },
-                { icon: '✅', label: 'Validasi' }
-            ]} />;
-        }
-        // 2. WEB3 VS WEB2 (COMPARISON)
-        if (t.includes('web3') && (t.includes('web2') || t.includes('beda'))) {
-            return <DiagramComparison title="Evolusi Internet" 
-                left={{ title: "Web 2.0", icon: "📱", points: ["Terpusat (Google/FB)", "Data milik PT", "Rawan Sensor"] }} 
-                right={{ title: "Web 3.0", icon: "🌐", points: ["Terdesentralisasi", "Data milik User", "Transparan"] }} 
-            />;
-        }
-        // 3. MINING (FLOW)
-        if (t.includes('mining') || t.includes('proof of work')) {
-            return <DiagramFlow title="Proses Mining (PoW)" color="orange" steps={[
-                { icon: '💻', label: 'Komputer' },
-                { icon: '🧩', label: 'Hitung Kode' },
-                { icon: '⚡', label: 'Butuh Listrik' },
-                { icon: '💰', label: 'Dapat Koin' }
-            ]} />;
-        }
-        // 4. STAKING (CYCLE)
-        if (t.includes('staking') || t.includes('proof of stake')) {
-            return <DiagramCycle title="Siklus Staking" steps={[
-                { icon: '🔒', label: 'Kunci Koin' },
-                { icon: '🛡️', label: 'Validasi' },
-                { icon: '🎁', label: 'Dapat Reward' },
-                { icon: '🔄', label: 'Compound' }
-            ]} />;
-        }
-        // 5. NFT (MINDMAP)
-        if (t.includes('nft')) {
-            return <DiagramMindMap center={{ title: "Fungsi NFT", icon: "🎨", label: "Unik" }} color="purple" nodes={[
-                { icon: "🖌️", label: "Seni Digital" },
-                { icon: "🎮", label: "Item Game" },
-                { icon: "🆔", label: "Identitas" },
-                { icon: "🎵", label: "Musik/Karya" }
-            ]} />;
-        }
-        // 6. DEFI (MINDMAP)
-        if (t.includes('defi')) {
-            return <DiagramMindMap center={{ title: "Dunia DeFi", icon: "💸", label: "Keuangan" }} color="green" nodes={[
-                { icon: "🏦", label: "DEX (Tukar)" },
-                { icon: "💰", label: "Lending" },
-                { icon: "🚜", label: "Farming" },
-                { icon: "💲", label: "Stablecoin" }
-            ]} />;
-        }
-        // 7. DAO (MINDMAP)
-        if (t.includes('dao')) {
-            return <DiagramMindMap center={{ title: "Struktur DAO", icon: "🏛️", label: "Organisasi" }} color="blue" nodes={[
-                { icon: "🗳️", label: "Voting" },
-                { icon: "🎟️", label: "Token" },
-                { icon: "📜", label: "Proposal" },
-                { icon: "🤝", label: "Komunitas" }
-            ]} />;
-        }
-        // 8. WALLET (COMPARISON)
-        if (t.includes('wallet') || t.includes('dompet')) {
-            return <DiagramComparison title="Tipe Wallet" 
-                left={{ title: "Hot Wallet", icon: "🔥", points: ["Online (App)", "Mudah Dipakai", "Kurang Aman"] }} 
-                right={{ title: "Cold Wallet", icon: "❄️", points: ["Offline (USB)", "Ribet Dipakai", "Sangat Aman"] }} 
-            />;
-        }
-        // 9. COIN VS TOKEN (COMPARISON)
-        if ((t.includes('coin') && t.includes('token')) || t.includes('beda')) {
-            return <DiagramComparison title="Coin vs Token" 
-                left={{ title: "Coin", icon: "🪙", points: ["Punya Blockchain", "Contoh: BTC, ETH", "Mata Uang Asli"] }} 
-                right={{ title: "Token", icon: "🎫", points: ["Numpang Chain", "Contoh: SHIB, UNI", "Aset Proyek"] }} 
-            />;
-        }
-        // 10. SMART CONTRACT (FLOW)
-        if (t.includes('smart contract') || t.includes('kontrak')) {
-            return <DiagramFlow title="Logika Smart Contract" color="blue" steps={[
-                { icon: '📜', label: 'Tulis Kode' },
-                { icon: '⚖️', label: 'Syarat (IF)' },
-                { icon: '🤖', label: 'Aksi (THEN)' },
-                { icon: '✅', label: 'Otomatis' }
-            ]} />;
-        }
-        // 11. BITCOIN (MINDMAP)
-        if (t.includes('bitcoin') || t.includes('btc')) {
-            return <DiagramMindMap center={{ title: "Bitcoin", icon: "₿", label: "Emas Digital" }} color="orange" nodes={[
-                { icon: "🥇", label: "Koin #1" },
-                { icon: "🔒", label: "Paling Aman" },
-                { icon: "⛏️", label: "Proof of Work" },
-                { icon: "📉", label: "Max 21 Juta" }
-            ]} />;
-        }
-        // 12. ETHEREUM (MINDMAP)
-        if (t.includes('ethereum') || t.includes('eth')) {
-            return <DiagramMindMap center={{ title: "Ethereum", icon: "Ξ", label: "Platform" }} color="blue" nodes={[
-                { icon: "📜", label: "Smart Contract" },
-                { icon: "🎨", label: "Rumah NFT" },
-                { icon: "💸", label: "Pusat DeFi" },
-                { icon: "⛽", label: "Gas Fee" }
-            ]} />;
-        }
-        // 13. STABLECOIN (MINDMAP)
-        if (t.includes('stablecoin') || t.includes('usdt')) {
-            return <DiagramMindMap center={{ title: "Stablecoin", icon: "💵", label: "Stabil" }} color="green" nodes={[
-                { icon: "🏦", label: "Fiat (USDT)" },
-                { icon: "🪙", label: "Crypto (DAI)" },
-                { icon: "🧮", label: "Algo (UST)" },
-                { icon: "📉", label: "Anti Volatil" }
-            ]} />;
-        }
-        // 14. GAS FEE (CYCLE)
-        if (t.includes('gas') || t.includes('biaya')) {
-            return <DiagramCycle title="Siklus Gas Fee" steps={[
-                { icon: '👤', label: 'User Kirim' },
-                { icon: '⛽', label: 'Bayar Gas' },
-                { icon: '👷', label: 'Validator' },
-                { icon: '✅', label: 'Konfirmasi' }
-            ]} />;
-        }
-        // 15. DESENTRALISASI (MINDMAP)
-        if (t.includes('desentralisasi')) {
-            return <DiagramMindMap center={{ title: "Desentralisasi", icon: "🌐", label: "P2P" }} color="green" nodes={[
-                { icon: "❌", label: "Tanpa Bank" },
-                { icon: "🤝", label: "User ke User" },
-                { icon: "🛡️", label: "Tahan Sensor" },
-                { icon: "🌍", label: "Global" }
-            ]} />;
-        }
-        // 16. MINTING (FLOW)
-        if (t.includes('minting')) {
-            return <DiagramFlow title="Proses Minting NFT" color="pink" steps={[
-                { icon: '📂', label: 'Upload File' },
-                { icon: '✍️', label: 'Isi Data' },
-                { icon: '⛽', label: 'Bayar Gas' },
-                { icon: '✨', label: 'Jadi NFT' }
-            ]} />;
-        }
-        // 17. MARKETPLACE (MINDMAP)
-        if (t.includes('marketplace') || t.includes('opensea')) {
-            return <DiagramMindMap center={{ title: "Marketplace", icon: "🏪", label: "Pasar" }} color="blue" nodes={[
-                { icon: "🌊", label: "OpenSea" },
-                { icon: "🟡", label: "Rarible" },
-                { icon: "🌫️", label: "Blur" },
-                { icon: "🪄", label: "Magic Eden" }
-            ]} />;
-        }
-        // 18. METAVERSE (MINDMAP)
-        if (t.includes('metaverse')) {
-            return <DiagramMindMap center={{ title: "Metaverse", icon: "🕶️", label: "Virtual" }} color="purple" nodes={[
-                { icon: "🧍", label: "Avatar" },
-                { icon: "🏞️", label: "Tanah Virtual" },
-                { icon: "💰", label: "Ekonomi" },
-                { icon: "🤝", label: "Sosial" }
-            ]} />;
-        }
-        // 19. CEX VS DEX (COMPARISON)
-        if (t.includes('cex') || t.includes('dex')) {
-            return <DiagramComparison title="Tempat Trading" 
-                left={{ title: "CEX (Binance/Toko)", icon: "🏦", points: ["Ada CS", "Login Email", "Dana di Admin"] }} 
-                right={{ title: "DEX (Uniswap)", icon: "🦄", points: ["Mandiri", "Login Wallet", "Dana Sendiri"] }} 
-            />;
-        }
-        // 20. LIQUIDITY POOL (CYCLE)
-        if (t.includes('liquidity')) {
-            return <DiagramCycle title="Liquidity Pool" steps={[
-                { icon: '➕', label: 'Setor 2 Aset' },
-                { icon: '🏊', label: 'Masuk Pool' },
-                { icon: '💱', label: 'Trader Swap' },
-                { icon: '💵', label: 'Dapat Fee' }
-            ]} />;
-        }
-        // 21. YIELD FARMING (FLOW)
-        if (t.includes('farming')) {
-            return <DiagramFlow title="Yield Farming" color="green" steps={[
-                { icon: '💰', label: 'Punya Aset' },
-                { icon: '🏦', label: 'Pinjamkan' },
-                { icon: '⏳', label: 'Tunggu' },
-                { icon: '🌾', label: 'Panen Bunga' }
-            ]} />;
-        }
-        // 22. GOVERNANCE (FLOW)
-        if (t.includes('governance') || t.includes('voting')) {
-            return <DiagramFlow title="Proses Voting DAO" color="blue" steps={[
-                { icon: '🪙', label: 'Beli Token' },
-                { icon: '💡', label: 'Buat Usulan' },
-                { icon: '🗳️', label: 'Voting' },
-                { icon: '⚖️', label: 'Keputusan' }
-            ]} />;
-        }
-        // 23. SEED PHRASE (FLOW)
-        if (t.includes('seed')) {
-            return <DiagramFlow title="Pentingnya Seed" color="red" steps={[
-                { icon: '🔑', label: 'Buat Wallet' },
-                { icon: '📝', label: 'Catat Kata' },
-                { icon: '🗄️', label: 'Simpan Aman' },
-                { icon: '🔓', label: 'Kunci Utama' }
-            ]} />;
-        }
-        // 24. PRIVATE KEY (COMPARISON)
-        if (t.includes('key')) {
-            return <DiagramComparison title="Kunci Crypto" 
-                left={{ title: "Public Key", icon: "📬", points: ["Boleh Disebar", "Utk Terima", "No. Rekening"] }} 
-                right={{ title: "Private Key", icon: "🗝️", points: ["RAHASIA", "Utk Kirim", "PIN ATM"] }} 
-            />;
-        }
-        // 25. SECURITY RISK (MINDMAP)
-        if (t.includes('risiko') || t.includes('aman')) {
-            return <DiagramMindMap center={{ title: "Risiko", icon: "⚠️", label: "Bahaya" }} color="red" nodes={[
-                { icon: "🎣", label: "Phishing" },
-                { icon: "🏃", label: "Rug Pull" },
-                { icon: "🦠", label: "Malware" },
-                { icon: "📉", label: "Volatilitas" }
-            ]} />;
-        }
-        // 26. TOKENOMICS (CYCLE)
-        if (t.includes('tokenomics')) {
-            return <DiagramCycle title="Ekonomi Token" steps={[
-                { icon: '🏭', label: 'Supply' },
-                { icon: '🎁', label: 'Insentif' },
-                { icon: '🛒', label: 'Demand' },
-                { icon: '🔥', label: 'Burn' }
-            ]} />;
-        }
-        // 27. SUPPLY DEMAND (FLOW)
-        if (t.includes('supply') || t.includes('harga')) {
-            return <DiagramFlow title="Hukum Harga" color="green" steps={[
-                { icon: '📉', label: 'Supply Turun' },
-                { icon: '📈', label: 'Demand Naik' },
-                { icon: '🚀', label: 'Harga Naik' },
-                { icon: '🤑', label: 'Profit' }
-            ]} />;
-        }
-        // 28. MARKET CAP (FLOW)
-        if (t.includes('market cap')) {
-            return <DiagramFlow title="Market Cap" color="blue" steps={[
-                { icon: '🪙', label: 'Harga Koin' },
-                { icon: '✖️', label: 'Dikali' },
-                { icon: '🔢', label: 'Jml Beredar' },
-                { icon: '💰', label: '= Valuasi' }
-            ]} />;
-        }
-        // 29. BULL VS BEAR (COMPARISON)
-        if (t.includes('bull') || t.includes('bear')) {
-            return <DiagramComparison title="Kondisi Pasar" 
-                left={{ title: "Bull (Naik)", icon: "🐂", points: ["Optimis", "Beli", "Grafik Hijau"] }} 
-                right={{ title: "Bear (Turun)", icon: "🐻", points: ["Pesimis", "Jual", "Grafik Merah"] }} 
-            />;
-        }
-        // 30. LAYER 2 (FLOW)
-        if (t.includes('layer 2')) {
-            return <DiagramFlow title="Solusi Layer 2" color="purple" steps={[
-                { icon: '🐌', label: 'L1 Macet' },
-                { icon: '⚡', label: 'L2 Proses' },
-                { icon: '📦', label: 'Bungkus' },
-                { icon: '✅', label: 'Lapor L1' }
-            ]} />;
-        }
-        // 31. BRIDGE (FLOW)
-        if (t.includes('bridge')) {
-            return <DiagramFlow title="Bridge (Jembatan)" color="orange" steps={[
-                { icon: '🔒', label: 'Lock di A' },
-                { icon: '🌉', label: 'Lewat Bridge' },
-                { icon: '🔓', label: 'Mint di B' },
-                { icon: '🔁', label: 'Bisa Balik' }
-            ]} />;
-        }
-        // 32. AIRDROP (FLOW)
-        if (t.includes('airdrop')) {
-            return <DiagramFlow title="Proses Airdrop" color="green" steps={[
-                { icon: '🏗️', label: 'Proyek Baru' },
-                { icon: '🧪', label: 'User Test' },
-                { icon: '📸', label: 'Snapshot' },
-                { icon: '🪂', label: 'Dapat Koin' }
-            ]} />;
-        }
-        // 33. FORK (COMPARISON)
-        if (t.includes('fork')) {
-            return <DiagramComparison title="Jenis Fork" 
-                left={{ title: "Soft Fork", icon: "🥄", points: ["Update Ringan", "Kompatibel", "Minor"] }} 
-                right={{ title: "Hard Fork", icon: "🍴", points: ["Update Besar", "Pecah Chain", "Mayor"] }} 
-            />;
-        }
-        // 34. AKSES INFORMASI (MINDMAP) - SKRIPSI
-        if (t.includes('sumber') || t.includes('berita') || t.includes('informasi')) {
-            return <DiagramMindMap center={{ title: "Sumber Info", icon: "📡", label: "Riset" }} color="blue" nodes={[
-                { icon: "🦎", label: "CoinGecko" },
-                { icon: "🐦", label: "Twitter/X" },
-                { icon: "💬", label: "Discord" },
-                { icon: "📰", label: "Berita" }
-            ]} />;
-        }
-        // 35. DYOR (FLOW) - SKRIPSI
-        if (t.includes('dyor')) {
-            return <DiagramFlow title="Langkah DYOR" color="purple" steps={[
-                { icon: '🌐', label: 'Cek Web' },
-                { icon: '👥', label: 'Cek Tim' },
-                { icon: '📄', label: 'Baca WP' },
-                { icon: '🗺️', label: 'Roadmap' }
-            ]} />;
-        }
-        // 36. AUDIT (FLOW)
-        if (t.includes('audit')) {
-            return <DiagramFlow title="Proses Audit" color="blue" steps={[
-                { icon: '👨‍💻', label: 'Dev Buat' },
-                { icon: '🕵️', label: 'Auditor Cek' },
-                { icon: '🐛', label: 'Temu Bug' },
-                { icon: '🛡️', label: 'Skor Aman' }
-            ]} />;
-        }
-        // 37. WHITEPAPER (MINDMAP)
-        if (t.includes('whitepaper')) {
-            return <DiagramMindMap center={{ title: "Isi Whitepaper", icon: "📄", label: "Dokumen" }} color="gray" nodes={[
-                { icon: "🎯", label: "Visi Misi" },
-                { icon: "⚙️", label: "Teknologi" },
-                { icon: "📊", label: "Tokenomics" },
-                { icon: "👥", label: "Tim Dev" }
-            ]} />;
-        }
-        // 38. HUKUM INDONESIA (COMPARISON) - SKRIPSI
-        if (t.includes('hukum') || t.includes('legal')) {
-            return <DiagramComparison title="Hukum RI" 
-                left={{ title: "BOLEH (Aset)", icon: "✅", points: ["Investasi", "Trading", "Disimpan"] }} 
-                right={{ title: "DILARANG (Bayar)", icon: "🚫", points: ["Beli Barang", "Ganti Rupiah", "Alat Bayar"] }} 
-            />;
-        }
-        // 39. PAJAK (FLOW)
-        if (t.includes('pajak')) {
-            return <DiagramFlow title="Pajak Crypto RI" color="orange" steps={[
-                { icon: '🛒', label: 'Beli' },
-                { icon: '0,11%', label: 'PPN 0.11%' },
-                { icon: '💰', label: 'Jual' },
-                { icon: '0,1%', label: 'PPh 0.1%' }
-            ]} />;
-        }
-        // 40. BAPPEBTI (MINDMAP)
-        if (t.includes('bappebti')) {
-            return <DiagramMindMap center={{ title: "Bappebti", icon: "👮", label: "Pengawas" }} color="blue" nodes={[
-                { icon: "📜", label: "Buat Aturan" },
-                { icon: "🏢", label: "Izin Bursa" },
-                { icon: "⚖️", label: "Lindungi" },
-                { icon: "📋", label: "List Aset" }
-            ]} />;
-        }
-        // 41. PHISHING (FLOW)
-        if (t.includes('phishing')) {
-            return <DiagramFlow title="Serangan Phishing" color="red" steps={[
-                { icon: '🎣', label: 'Link Palsu' },
-                { icon: '🖱️', label: 'User Klik' },
-                { icon: '⌨️', label: 'Isi Seed' },
-                { icon: '💸', label: 'Dana Hilang' }
-            ]} />;
-        }
-        // 42. RUG PULL (FLOW)
-        if (t.includes('rug')) {
-            return <DiagramFlow title="Modus Rug Pull" color="red" steps={[
-                { icon: '📢', label: 'Promo Hype' },
-                { icon: '💰', label: 'User Beli' },
-                { icon: '📉', label: 'Dev Jual' },
-                { icon: '💀', label: 'Harga 0' }
-            ]} />;
-        }
-        // 43. HODL (CYCLE)
-        if (t.includes('hodl')) {
-            return <DiagramCycle title="Strategi HODL" steps={[
-                { icon: '💵', label: 'Beli' },
-                { icon: '😴', label: 'Tidur' },
-                { icon: '🙈', label: 'Abaikan' },
-                { icon: '💰', label: 'Cuan' }
-            ]} />;
-        }
-        // 44. FOMO (FLOW)
-        if (t.includes('fomo')) {
-            return <DiagramFlow title="Siklus FOMO" color="red" steps={[
-                { icon: '🚀', label: 'Harga Naik' },
-                { icon: '🤩', label: 'Ikut Beli' },
-                { icon: '📉', label: 'Harga Turun' },
-                { icon: '😭', label: 'Nyangkut' }
-            ]} />;
-        }
-        // 45. IMPERMANENT LOSS (FLOW)
-        if (t.includes('impermanent')) {
-            return <DiagramFlow title="Imp. Loss" color="orange" steps={[
-                { icon: '⚖️', label: 'Masuk Pool' },
-                { icon: '📊', label: 'Harga Beda' },
-                { icon: '📉', label: 'Nilai Turun' },
-                { icon: '📤', label: 'Tarik Rugi' }
-            ]} />;
-        }
-        // 46. MASA DEPAN (MINDMAP)
-        if (t.includes('masa depan') || t.includes('future')) {
-            return <DiagramMindMap center={{ title: "Potensi", icon: "🔮", label: "Future" }} color="purple" nodes={[
-                { icon: "🗳️", label: "Voting" },
-                { icon: "🏥", label: "Medis" },
-                { icon: "🎓", label: "Ijazah" },
-                { icon: "🆔", label: "ID Digital" }
-            ]} />;
-        }
-        // 47. KYC (FLOW)
-        if (t.includes('kyc')) {
-             return <DiagramFlow title="Proses KYC" color="blue" steps={[
-                { icon: '📝', label: 'Daftar' },
-                { icon: '📸', label: 'Foto KTP' },
-                { icon: '🤳', label: 'Selfie' },
-                { icon: '✅', label: 'Verified' }
-            ]} />;
-        }
-        // 48. HALVING (FLOW)
-        if (t.includes('halving')) {
-             return <DiagramFlow title="Bitcoin Halving" color="orange" steps={[
-                { icon: '⏰', label: '4 Tahun' },
-                { icon: '✂️', label: 'Reward / 2' },
-                { icon: '📉', label: 'Supply Seret' },
-                { icon: '🚀', label: 'Harga Naik' }
-            ]} />;
-        }
-         // 49. REKT (FLOW)
-        if (t.includes('rekt') || t.includes('bangkrut')) {
-             return <DiagramFlow title="Kena Rekt" color="red" steps={[
-                { icon: '🎰', label: 'Judi' },
-                { icon: '📉', label: 'Salah Posisi' },
-                { icon: '💸', label: 'Likuidasi' },
-                { icon: '😭', label: 'Habis' }
-            ]} />;
-        }
-        // 50. ATH (FLOW)
-        if (t.includes('ath')) {
-             return <DiagramFlow title="All Time High" color="green" steps={[
-                { icon: '🚀', label: 'Rally' },
-                { icon: '📈', label: 'Tembus Atas' },
-                { icon: '🏆', label: 'Rekor Baru' },
-                { icon: '💰', label: 'Profit' }
-            ]} />;
+        const lowerTopic = topic.toLowerCase();
+        
+        // --- VISUAL 1: AKSES INFORMASI (Information Access) ---
+        if (lowerTopic.includes('akses informasi') || lowerTopic.includes('mencari informasi')) {
+            return (
+                <div className="bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50 p-6 rounded-2xl border-2 border-blue-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-sky-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🔍</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 1: Akses Informasi</h3>
+                    </div>
+                    <div className="flex justify-between items-center gap-2 bg-white p-4 rounded-xl border border-gray-200">
+                        <div className="flex flex-col items-center">
+                            <div className="text-3xl mb-1">📰</div>
+                            <span className="text-[10px] font-bold text-gray-600">Berita</span>
+                        </div>
+                         <div className="flex flex-col items-center">
+                            <div className="text-3xl mb-1">📑</div>
+                            <span className="text-[10px] font-bold text-gray-600">Whitepaper</span>
+                        </div>
+                         <div className="flex flex-col items-center">
+                            <div className="text-3xl mb-1">🐦</div>
+                            <span className="text-[10px] font-bold text-gray-600">Komunitas</span>
+                        </div>
+                        <div className="text-2xl text-blue-500">→</div>
+                        <div className="flex flex-col items-center bg-blue-100 p-2 rounded-lg">
+                            <span className="text-xl">🧠</span>
+                            <span className="text-[10px] font-bold text-blue-700">Wawasan</span>
+                        </div>
+                    </div>
+                     <p className="text-xs text-gray-600 mt-3 italic text-center">"Kemampuan menemukan sumber terpercaya tentang Blockchain & Web3."</p>
+                </div>
+            );
         }
 
-        // DEFAULT FALLBACK
-        return <DiagramMindMap center={{ title: "Web3", icon: "💡", label: "Konsep" }} color="gray" nodes={[
-                { icon: "🌐", label: "Teknologi" },
-                { icon: "👥", label: "Komunitas" },
-                { icon: "💰", label: "Ekonomi" },
-                { icon: "🚀", label: "Masa Depan" }
-            ]} />;
+        // --- VISUAL 2: EVALUASI INFORMASI (Information Evaluation) ---
+        if (lowerTopic.includes('evaluasi informasi') || lowerTopic.includes('validasi') || lowerTopic.includes('scam')) {
+            return (
+                <div className="bg-gradient-to-br from-purple-50 via-fuchsia-50 to-pink-50 p-6 rounded-2xl border-2 border-purple-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🧐</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 2: Evaluasi Informasi</h3>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-3 bg-red-50 p-3 rounded-lg border border-red-200 opacity-50">
+                            <span className="text-xl">❌</span>
+                            <div className="text-xs text-gray-500 line-through">"Pasti untung 1000%!"</div>
+                        </div>
+                         <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg border border-green-200 shadow-sm transform scale-105">
+                            <span className="text-xl">✅</span>
+                            <div className="text-xs font-bold text-green-800">"Cek Whitepaper & Tim Developer"</div>
+                        </div>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-3 italic text-center">"Kemampuan membedakan fakta vs hype/penipuan."</p>
+                </div>
+            );
+        }
+
+        // --- VISUAL 3: LITERASI EKONOMI (Economic Literacy) ---
+        if (lowerTopic.includes('literasi ekonomi') || lowerTopic.includes('dampak ekonomi')) {
+            return (
+                <div className="bg-gradient-to-br from-emerald-50 via-green-50 to-lime-50 p-6 rounded-2xl border-2 border-emerald-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">📈</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 3: Literasi Ekonomi</h3>
+                    </div>
+                    <div className="flex justify-around items-end h-24 bg-white p-4 rounded-xl border border-emerald-100">
+                        <div className="w-8 bg-gray-200 h-[40%] rounded-t-md relative group">
+                            <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs opacity-0 group-hover:opacity-100">Tradisional</span>
+                        </div>
+                        <div className="w-8 bg-emerald-300 h-[60%] rounded-t-md relative group">
+                             <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs opacity-0 group-hover:opacity-100">Digital</span>
+                        </div>
+                        <div className="w-8 bg-emerald-500 h-[85%] rounded-t-md relative group animate-pulse">
+                             <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs font-bold text-emerald-700">Web3</span>
+                        </div>
+                    </div>
+                    <div className="flex justify-between mt-2 px-2 text-[10px] text-gray-500 font-mono">
+                        <span>Aset Fisik</span>
+                        <span>Tokenisasi</span>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-3 italic text-center">"Memahami potensi & nilai ekonomi baru."</p>
+                </div>
+            );
+        }
+
+        // --- VISUAL 4: LITERASI HUKUM (Legal Literacy) ---
+        if (lowerTopic.includes('literasi hukum') || lowerTopic.includes('regulasi') || lowerTopic.includes('legal')) {
+            return (
+                <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50 p-6 rounded-2xl border-2 border-slate-300 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-gray-700 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">⚖️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 4: Literasi Hukum</h3>
+                    </div>
+                    <div className="flex items-center justify-center gap-4">
+                        <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center w-24">
+                            <div className="text-2xl mb-1">🏛️</div>
+                            <div className="text-[10px] font-bold">Regulator</div>
+                            <div className="text-[8px] text-gray-500">(Bappebti/OJK)</div>
+                        </div>
+                        <div className="text-xl text-gray-400">↔️</div>
+                        <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center w-24">
+                            <div className="text-2xl mb-1">👤</div>
+                            <div className="text-[10px] font-bold">Pengguna</div>
+                            <div className="text-[8px] text-gray-500">(Hak & Pajak)</div>
+                        </div>
+                    </div>
+                    <p className="text-xs text-gray-600 mt-3 italic text-center">"Kesadaran akan aturan main dan perlindungan hukum."</p>
+                </div>
+            );
+        }
+
+        // --- VISUAL 5: LITERASI RISIKO (Risk Literacy) ---
+        if (lowerTopic.includes('literasi risiko') || lowerTopic.includes('keamanan') || lowerTopic.includes('risk')) {
+            return (
+                <div className="bg-gradient-to-br from-orange-50 via-red-50 to-rose-50 p-6 rounded-2xl border-2 border-orange-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🛡️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 5: Literasi Risiko</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-white p-3 rounded-lg border-l-4 border-red-500 shadow-sm">
+                            <div className="text-xs font-bold text-red-600 mb-1">⚠️ Ancaman</div>
+                            <ul className="text-[10px] text-gray-600 list-disc ml-3">
+                                <li>Phishing</li>
+                                <li>Hack Wallet</li>
+                                <li>Volatilitas</li>
+                            </ul>
+                        </div>
+                        <div className="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm">
+                            <div className="text-xs font-bold text-green-600 mb-1">🔒 Solusi</div>
+                            <ul className="text-[10px] text-gray-600 list-disc ml-3">
+                                <li>Cold Wallet</li>
+                                <li>Jaga Seed Phrase</li>
+                                <li>Verifikasi URL</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <p className="text-xs text-gray-600 mt-3 italic text-center">"Waspada dan tahu cara melindungi aset."</p>
+                </div>
+            );
+        }
+
+        // --- EXISTING VISUALS (Blockchain, Web3, dll) ---
+        if (lowerTopic.includes('blockchain') || lowerTopic.includes('block chain')) {
+            return (
+                <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6 rounded-2xl border-2 border-blue-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">⛓️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Struktur Blockchain</h3>
+                    </div>
+                    <div className="flex items-center gap-2 overflow-x-auto pb-3 scrollbar-hide">
+                        {[1, 2, 3, 4].map((block) => (
+                            <div key={block} className="flex items-center">
+                                <div className="bg-white border-2 border-blue-400 p-4 rounded-xl min-w-[120px] shadow-md hover:shadow-lg transition-all hover:scale-105">
+                                    <div className="font-bold text-sm text-gray-800 mb-2">Block {block}</div>
+                                    <div className="text-xs mt-2 text-gray-600 font-mono">Hash: {Math.random().toString(36).substr(2, 6)}</div>
+                                    <div className="text-xs text-gray-600 font-mono">Prev: {block > 1 ? Math.random().toString(36).substr(2, 6) : '000000'}</div>
+                                </div>
+                                {block < 4 && (
+                                    <div className="text-blue-500 text-2xl mx-2 font-bold">→</div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+        
+        if (lowerTopic.includes('web3') || lowerTopic.includes('web 2')) {
+            return (
+                <div className="bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-6 rounded-2xl border-2 border-emerald-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🌐</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Evolusi Web</h3>
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                        <div className="bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 transition-all hover:shadow-md">
+                            <div className="text-4xl mb-3 text-center">📄</div>
+                            <div className="font-bold text-sm text-blue-600 mb-1 text-center">Web 1.0</div>
+                            <div className="text-xs text-gray-500 mb-2 text-center font-semibold">Read-Only</div>
+                            <div className="text-xs text-center text-gray-600">Static Pages</div>
+                        </div>
+                        <div className="bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-purple-300 transition-all hover:shadow-md">
+                            <div className="text-4xl mb-3 text-center">💬</div>
+                            <div className="font-bold text-sm text-purple-600 mb-1 text-center">Web 2.0</div>
+                            <div className="text-xs text-gray-500 mb-2 text-center font-semibold">Read-Write</div>
+                            <div className="text-xs text-center text-gray-600">Social Media</div>
+                        </div>
+                        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-4 rounded-xl shadow-xl hover:shadow-2xl transition-all hover:scale-105">
+                            <div className="text-4xl mb-3 text-center">🔐</div>
+                            <div className="font-bold text-sm mb-1 text-center">Web 3.0</div>
+                            <div className="text-xs opacity-90 mb-2 text-center font-semibold">Read-Write-Own</div>
+                            <div className="text-xs text-center">Decentralized</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (lowerTopic.includes('mining') || lowerTopic.includes('proof-of-work')) {
+            return (
+                <div className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-6 rounded-2xl border-2 border-amber-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">⛏️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Proof-of-Work Mining</h3>
+                    </div>
+                    <div className="flex items-center justify-around gap-3">
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-3 hover:scale-110 transition-all">
+                                <span className="text-3xl">💻</span>
+                            </div>
+                            <div className="text-xs font-semibold text-gray-700">Komputer</div>
+                        </div>
+                        <div className="text-3xl text-amber-500">→</div>
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-3 hover:scale-110 transition-all">
+                                <span className="text-3xl">🧮</span>
+                            </div>
+                            <div className="text-xs font-semibold text-gray-700">Solve Puzzle</div>
+                        </div>
+                        <div className="text-3xl text-amber-500">→</div>
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg mb-3 hover:scale-110 transition-all glow">
+                                <span className="text-3xl">🏆</span>
+                            </div>
+                            <div className="text-xs font-semibold text-gray-700">Reward</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (lowerTopic.includes('proof-of-stake') || lowerTopic.includes('staking')) {
+            return (
+                <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-6 rounded-2xl border-2 border-green-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🔒</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Proof-of-Stake</h3>
+                    </div>
+                    <div className="flex items-center justify-around gap-3">
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-3 hover:scale-110 transition-all">
+                                <span className="text-3xl">💰</span>
+                            </div>
+                            <div className="text-xs font-semibold text-gray-700">Koin Anda</div>
+                        </div>
+                        <div className="text-3xl text-green-500">→</div>
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-3 hover:scale-110 transition-all">
+                                <span className="text-3xl">🔒</span>
+                            </div>
+                            <div className="text-xs font-semibold text-gray-700">Stake/Lock</div>
+                        </div>
+                        <div className="text-3xl text-green-500">→</div>
+                        <div className="text-center">
+                            <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg mb-3 hover:scale-110 transition-all glow">
+                                <span className="text-3xl">🎁</span>
+                            </div>
+                            <div className="text-xs font-semibold text-gray-700">Reward</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (lowerTopic.includes('coin') && lowerTopic.includes('token')) {
+            return (
+                <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 p-6 rounded-2xl border-2 border-yellow-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">💎</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Coin vs Token</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gradient-to-br from-yellow-100 to-amber-100 p-5 rounded-2xl border-2 border-yellow-400 shadow-md hover:shadow-xl transition-all hover:scale-105">
+                            <div className="text-4xl mb-3 text-center">🪙</div>
+                            <div className="font-bold text-center mb-2 text-lg">COIN</div>
+                            <div className="text-xs text-gray-700 text-center mb-3 font-semibold">Bitcoin, Ethereum</div>
+                            <div className="text-xs text-gray-600 text-center">Punya blockchain sendiri • Seperti "uang sungguhan"</div>
+                        </div>
+                        <div className="bg-gradient-to-br from-blue-100 to-indigo-100 p-5 rounded-2xl border-2 border-blue-400 shadow-md hover:shadow-xl transition-all hover:scale-105">
+                            <div className="text-4xl mb-3 text-center">🎟️</div>
+                            <div className="font-bold text-center mb-2 text-lg">TOKEN</div>
+                            <div className="text-xs text-gray-700 text-center mb-3 font-semibold">SHIBA, UNI, LINK</div>
+                            <div className="text-xs text-gray-600 text-center">Menumpang blockchain • Seperti "voucher"</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (lowerTopic.includes('nft')) {
+            return (
+                <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-fuchsia-50 p-6 rounded-2xl border-2 border-pink-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🎨</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">NFT (Non-Fungible Token)</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-5 rounded-2xl text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105">
+                            <div className="text-4xl mb-3 text-center">🖼️</div>
+                            <div className="font-bold text-sm text-center mb-1">Digital Art #1234</div>
+                            <div className="text-xs mt-3 opacity-90 text-center font-semibold">Unique & Can't be Duplicated</div>
+                        </div>
+                        <div className="bg-white p-5 rounded-2xl border-2 border-purple-300 shadow-md">
+                            <div className="text-xs text-gray-500 mb-2 font-semibold">Token ID:</div>
+                            <div className="font-mono text-xs break-all text-gray-700 bg-gray-50 p-2 rounded">0x7a8f...9c2d</div>
+                            <div className="text-xs text-green-600 mt-3 font-bold flex items-center justify-center gap-1">
+                                <span>✓</span>
+                                <span>Verified on Blockchain</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        if (lowerTopic.includes('wallet') || lowerTopic.includes('dompet')) {
+            return (
+                <div className="bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 p-6 rounded-2xl border-2 border-indigo-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">👛</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Crypto Wallet</h3>
+                    </div>
+                    <div className="bg-white p-5 rounded-2xl border-2 border-indigo-300 shadow-lg">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="font-bold text-lg">My Wallet</div>
+                            <div className="text-3xl">💼</div>
+                        </div>
+                        <div className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-xl mb-4 border border-gray-200">
+                            <div className="text-xs text-gray-500 mb-2 font-semibold">Wallet Address:</div>
+                            <div className="font-mono text-xs break-all text-gray-700 font-medium">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb</div>
+                        </div>
+                        <div className="flex gap-3">
+                            <div className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl text-center text-sm font-bold shadow-md hover:shadow-lg transition-all hover:scale-105 cursor-pointer">Send 📤</div>
+                            <div className="flex-1 bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-xl text-center text-sm font-bold shadow-md hover:shadow-lg transition-all hover:scale-105 cursor-pointer">Receive 📥</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        // Loop melalui map untuk mencari keyword yang cocok
+        for (const keyword in visualMap) {
+            if (lowerTopic.includes(keyword)) {
+                const data = visualMap[keyword];
+                return <GenericVisual icon={data.icon} title={data.title} description={data.description} colorTheme={data.theme} />;
+            }
+        }
+
+        return null;
+    };
+
+
+    const shuffleArray = (array) => {
+        const newArray = [...array];
+        let currentIndex = newArray.length;
+        let randomIndex;
+        while (currentIndex !== 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [newArray[currentIndex], newArray[randomIndex]] = [newArray[randomIndex], newArray[currentIndex]];
+        }
+        return newArray;
+    };
+    
+    const masterSuggestionList = [
+        'Apa itu Web3?',
+        'Bagaimana cara kerja blockchain?',
+        'Apa itu cryptocurrency?',
+        'Apa perbedaan Web2 dan Web3?',
+        'Apa itu NFT?',
+        'Apa itu dApp?',
+        'Apa itu DAO?',
+        'Apa itu DeFi?',
+        'Apa itu smart contract?',
+        'Apa itu mining (Proof-of-Work)?',
+        'Apa itu staking (Proof-of-Stake)?',
+        'Apa perbedaan Coin vs Token?',
+        'Apa itu Layer 2?',
+        'Apa itu wallet crypto?',
+        'Apa itu gas fee?',
+        'Apa itu metaverse?',
+        'Apa keuntungan Web3?',
+        'Bagaimana cara mulai di Web3?'
+    ];
+
+    const generateNewSuggestions = (botReply, lastQuestion, currentSuggestions) => {
+        const lowerReply = botReply.toLowerCase();
+        const lowerLastQuestion = lastQuestion.toLowerCase();
+        const lowerCurrentSuggestions = currentSuggestions.map(s => s.toLowerCase());
+
+        let relevantSuggestions = [];
+
+        const keywordMap = {
+            'blockchain': ['Bagaimana cara kerja blockchain?', 'Apa itu smart contract?'],
+            'nft': ['Apa itu NFT?', 'Bagaimana cara membuat NFT?'],
+            'dao': ['Apa itu DAO?', 'Contoh DAO terkenal?'],
+            'defi': ['Apa itu DeFi?', 'Apa resiko DeFi?'],
+            'mining': ['Apa itu mining (Proof-of-Work)?', 'Apakah mining boros energi?'],
+            'staking': ['Apa itu staking (Proof-of-Stake)?', 'Apa resiko staking?'],
+            'wallet': ['Apa itu wallet crypto?', 'Bagaimana cara mengamankan wallet?']
+        };
+
+        for (const keyword in keywordMap) {
+            if (lowerReply.includes(keyword)) {
+                relevantSuggestions.push(...keywordMap[keyword]);
+            }
+        }
+        
+        let freshSuggestions = masterSuggestionList.filter(suggestion => {
+            const lowerSuggestion = suggestion.toLowerCase();
+            return lowerSuggestion !== lowerLastQuestion && !lowerCurrentSuggestions.includes(lowerSuggestion);
+        });
+
+        let newSuggestions = [];
+        let uniqueRelevant = [...new Set(relevantSuggestions)];
+        uniqueRelevant = uniqueRelevant.filter(suggestion => {
+                 const lowerSuggestion = suggestion.toLowerCase();
+                 return lowerSuggestion !== lowerLastQuestion && !lowerCurrentSuggestions.includes(lowerSuggestion);
+        });
+
+        newSuggestions.push(...uniqueRelevant);
+        const shuffledFreshList = shuffleArray(freshSuggestions);
+        let i = 0;
+        while (newSuggestions.length < 4 && i < shuffledFreshList.length) {
+            const randomSuggestion = shuffledFreshList[i];
+            if (!newSuggestions.map(s => s.toLowerCase()).includes(randomSuggestion.toLowerCase())) {
+                newSuggestions.push(randomSuggestion);
+            }
+            i++;
+        }
+
+        return newSuggestions.slice(0, 4);
     };
 
     const sendMessage = async (messageText) => {
@@ -762,7 +705,6 @@ const Web3Chatbot = () => {
         setMessages(prev => [...prev, { role: 'user', content: userMessage, visual: null }]);
         setInput('');
         setIsLoading(true);
-        // Hapus suggestion sementara loading
         setSuggestions([]);
 
         try {
@@ -794,34 +736,36 @@ const Web3Chatbot = () => {
             const data = await response.json();
             let botReply = data.choices[0].message.content;
 
-            // Simple formatting
-            botReply = botReply.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); 
-            botReply = botReply.replace(/\*(.*?)\*/g, '<i>$1</i>');   
-            botReply = botReply.replace(/`([^`]+)`/g, '<code class="bg-gray-100 px-1 rounded">$1</code>'); 
+            botReply = botReply.replace(/\*\*(.*?)\*\*/g, '$1'); 
+            botReply = botReply.replace(/\*(.*?)\*/g, '$1');   
+            botReply = botReply.replace(/`([^`]+)`/g, '$1'); 
             botReply = botReply.replace(/^(#+\s*)/gm, ''); 
-            botReply = botReply.replace(/Analogi:/gi, '<br/><b>Analogi:</b>');
+            botReply = botReply.replace(/Analogi:/gi, '');
+            botReply = botReply.replace(/Contoh:/gi, '');
             botReply = botReply.replace(/\n/g, '<br />');
 
-            let visual = generateVisual(userMessage);
+            let visual = null;
+            if (botReply && !botReply.toLowerCase().includes("hmm, pertanyaan itu sepertinya jauh banget")) {
+                 visual = generateVisual(userMessage);
+            }
             
             setMessages(prev => [...prev, { 
                 role: 'assistant', 
                 content: botReply,
-                visual: visual 
+                visual: visual
             }]);
             
-            // Generate Context-Aware Suggestions
-            const relevantSuggestions = getSuggestionsByContext(userMessage);
-            setSuggestions(relevantSuggestions);
+            const newSuggestions = generateNewSuggestions(botReply, userMessage, suggestions);
+            setSuggestions(newSuggestions);
             
         } catch (error) {
             console.error(error); 
             setMessages(prev => [...prev, { 
                 role: 'assistant', 
-                content: `❌ Maaf, ada gangguan sinyal: ${error.message}. Coba lagi ya!`,
+                content: `❌ Maaf, terjadi kesalahan: ${error.message}. Coba refresh halaman.`,
                 visual: null 
             }]);
-            setSuggestions(defaultSuggestions);
+            setSuggestions(topicSuggestionMap['Umum']);
         } finally {
             setIsLoading(false);
         }
@@ -829,15 +773,25 @@ const Web3Chatbot = () => {
 
     const handleTopicChange = (topic) => {
         setIsSidebarOpen(false);
-        setActiveTopic(topic);
         
-        // Pancing bot dengan pertanyaan awal topik
-        let starterQuestion = `Apa itu ${topic}?`;
-        if(topic === 'Akses Informasi') starterQuestion = 'Bagaimana cara mencari informasi crypto yang valid?';
-        if(topic === 'Literasi Ekonomi') starterQuestion = 'Jelaskan potensi ekonomi dan risiko di Web3';
-        if(topic === 'Literasi Hukum') starterQuestion = 'Bagaimana hukum crypto di Indonesia?';
-
-        sendMessage(starterQuestion);
+        if (topicSuggestionMap[topic]) {
+            setActiveTopic(topic);
+            
+            setMessages([
+                {
+                    role: 'assistant',
+                    content: `Oke! Mari kita fokus membahas ${topic}. Apa yang ingin kamu ketahui pertama?`,
+                    visual: generateVisual(topic)
+                }
+            ]);
+            
+            setSuggestions(topicSuggestionMap[topic]);
+            
+            setInput('');
+            setIsLoading(false);
+        } else {
+            sendMessage(`Apa itu ${topic}?`);
+        }
     };
     
     const handleSuggestionClick = (suggestion) => {
@@ -851,39 +805,49 @@ const Web3Chatbot = () => {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-slate-50 font-sans">
+        <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 to-gray-100">
             {isSidebarOpen && (
                 <div 
-                    className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+                    className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
                     onClick={() => setIsSidebarOpen(false)}
                 ></div>
             )}
 
-            {/* SIDEBAR */}
-            <div className={`fixed left-0 top-0 w-[280px] h-screen bg-white border-r border-gray-200 p-5 z-50 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} shadow-xl overflow-y-auto scrollbar-hide`}>
-                <div className="mb-6">
+            <div className={`fixed left-0 top-0 w-80 h-screen bg-gradient-to-b from-white to-slate-50 border-r border-gray-200 p-6 z-50 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} shadow-2xl overflow-y-auto scrollbar-hide`}>
+                <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg text-white">
+                            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg glow floating">
                                 <Sparkles />
                             </div>
                             <div>
-                                <h1 className="font-bold text-lg text-gray-800 tracking-tight">Web3 Hub</h1>
-                                <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Learning Center</p>
+                                <h1 className="font-black text-xl gradient-text">Web3 Hub</h1>
+                                <p className="text-xs text-gray-500 font-medium">Learning Center</p>
                             </div>
                         </div>
                         <button 
-                            className="lg:hidden text-gray-400 hover:text-gray-600"
+                            className="lg:hidden text-gray-500 hover:text-gray-700"
                             onClick={() => setIsSidebarOpen(false)}
                         >
                             <X />
                         </button>
                     </div>
+                    <p className="text-xs text-gray-600 bg-gradient-to-r from-purple-50 to-blue-50 p-3 rounded-xl border border-purple-100">
+                        💡 Asisten AI untuk belajar konsep Web3 dengan mudah dan menyenangkan!
+                    </p>
                 </div>
                 
-                <div className="space-y-1">
+                <div className="space-y-2">
+                    {/* --- MENU BARU: 5 Dimensi Literasi Web3 --- */}
                     <SidebarSubmenu
-                        title="Topik Dasar"
+                        title="Literasi Web3 (5 Dimensi)"
+                        icon="🧠"
+                        items={['Akses Informasi', 'Evaluasi Informasi', 'Literasi Ekonomi', 'Literasi Hukum', 'Literasi Risiko']}
+                        onTopicChange={handleTopicChange}
+                    />
+                    
+                    <SidebarSubmenu
+                        title="Topik Utama"
                         icon="🎯"
                         items={['Web3', 'Blockchain', 'NFT', 'DeFi', 'DAO']}
                         onTopicChange={handleTopicChange}
@@ -894,79 +858,74 @@ const Web3Chatbot = () => {
                         items={['Smart Contract', 'Mining', 'Staking', 'Wallet Crypto', 'Coin vs Token']}
                         onTopicChange={handleTopicChange}
                     />
-                    <SidebarSubmenu
-                        title="Dimensi Skripsi"
-                        icon="🎓"
-                        items={['Akses Informasi', 'Evaluasi Informasi', 'Literasi Ekonomi', 'Literasi Hukum', 'Literasi Risiko']}
-                        onTopicChange={handleTopicChange}
-                    />
                 </div>
 
-                <div className="mt-8 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
-                    <div className="text-xs font-bold text-indigo-800 mb-1">🚀 Tips</div>
-                    <div className="text-[11px] text-indigo-600 leading-relaxed">Gunakan fitur saran pertanyaan di bawah chat untuk eksplorasi lebih dalam!</div>
+                <div className="mt-8 p-4 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl border border-purple-200">
+                    <div className="text-sm font-bold text-purple-800 mb-2">🚀 Tips Belajar</div>
+                    <div className="text-xs text-purple-700">Mulai dari dasar, jangan ragu bertanya, dan eksplorasi topik yang menarik untukmu!</div>
                 </div>
             </div>
 
-            {/* MAIN CONTENT */}
-            <div className="flex-1 flex flex-col lg:ml-[280px] h-screen relative">
-                {/* HEADER */}
-                <div className="bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 py-3 sticky top-0 z-30">
-                    <div className="flex items-center justify-between max-w-3xl mx-auto w-full">
-                        <div className="flex items-center gap-3">
-                            <button 
-                                className="lg:hidden text-gray-600 hover:text-purple-600 transition-colors p-1"
-                                onClick={() => setIsSidebarOpen(true)}
-                            >
-                                <Menu />
-                            </button>
-                            <div>
-                                <h1 className="font-bold text-gray-800 text-sm md:text-base">Web3 Learning Hub</h1>
-                                <div className="flex items-center gap-1.5">
-                                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                                    <p className="text-xs text-gray-500">Online • Topik: {activeTopic}</p>
-                                </div>
+            <div className="flex-1 flex flex-col lg:ml-80">
+                <div className="glass-effect border-b border-white border-opacity-30 p-4 shadow-lg">
+                    <div className="flex items-center justify-between">
+                        <button 
+                            className="lg:hidden text-purple-600 hover:text-purple-700 transition-colors"
+                            onClick={() => setIsSidebarOpen(true)}
+                        >
+                            <Menu />
+                        </button>
+                        <div className="flex items-center gap-3 lg:gap-4">
+                            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg glow floating">
+                                <Sparkles />
                             </div>
+                            <div>
+                                <h1 className="font-black text-lg lg:text-xl gradient-text">Web3 Learning Hub</h1>
+                                <p className="text-xs text-gray-600 font-medium">Asisten belajar konsep Web3 🚀</p>
+                            </div>
+                        </div>
+                        <div className="hidden md:flex items-center gap-2 bg-white bg-opacity-60 px-4 py-2 rounded-full shadow-sm">
+                            <span className="text-xs font-semibold text-gray-600">Topik:</span>
+                            <span className="text-xs font-bold text-purple-600">{activeTopic}</span>
                         </div>
                     </div>
                 </div>
 
-                {/* CHAT AREA */}
-                <div className="flex-1 overflow-y-auto bg-slate-50 p-4 scroll-smooth">
-                    <div className="max-w-3xl mx-auto space-y-6 pb-4">
+                <div className="flex-1 overflow-y-auto scrollbar-hide bg-gradient-to-b from-white via-slate-50 to-gray-100">
+                    <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
                         {messages.map((msg, idx) => (
-                            <div key={idx} className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} animate-fade-in-up`}>
-                                <div className={`flex gap-3 max-w-[95%] md:max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                                    {/* Avatar */}
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 shadow-sm ${msg.role === 'user' ? 'bg-gray-200' : 'bg-gradient-to-br from-purple-600 to-blue-600'}`}>
-                                        {msg.role === 'user' ? '👤' : <span className="text-white text-xs">AI</span>}
+                            <div key={idx} className={`message-enter flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                {msg.role === 'assistant' && (
+                                    <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-2xl flex items-center justify-center mr-3 flex-shrink-0 shadow-lg glow">
+                                        <Sparkles />
                                     </div>
+                                )}
+                                <div className={`max-w-[85%] ${msg.role === 'user' ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 text-white shadow-lg' : 'bg-white border-2 border-gray-100 shadow-md'} rounded-3xl p-5 hover:shadow-xl transition-all`}>
                                     
-                                    {/* Bubble */}
-                                    <div className={`rounded-2xl p-4 shadow-sm text-sm leading-relaxed ${
-                                        msg.role === 'user' 
-                                            ? 'bg-blue-600 text-white rounded-tr-none' 
-                                            : 'bg-white text-gray-800 border border-gray-100 rounded-tl-none'
-                                    }`}>
-                                        <div dangerouslySetInnerHTML={{ __html: msg.content }} />
+                                    <div className={`text-sm leading-relaxed ${msg.role === 'user' ? 'text-white font-medium' : 'text-gray-800'}`}>
+                                        {msg.role === 'user' 
+                                            ? msg.content 
+                                            : <div dangerouslySetInnerHTML={{ __html: msg.content }} />
+                                        }
                                     </div>
-                                </div>
 
-                                {/* Visual Diagram (muncul di bawah bubble bot) */}
-                                {msg.visual && (
-                                    <div className="ml-11 mt-2 w-full max-w-[90%] md:max-w-[80%]">
-                                        {msg.visual}
+                                    {/* Di sinilah visual akan dirender */}
+                                    {msg.visual && msg.visual}
+                                </div>
+                                {msg.role === 'user' && (
+                                    <div className="w-10 h-10 bg-gradient-to-br from-gray-200 to-gray-300 rounded-2xl flex items-center justify-center ml-3 flex-shrink-0 shadow-md">
+                                        <span className="text-lg">👤</span>
                                     </div>
                                 )}
                             </div>
                         ))}
                         
                         {isLoading && (
-                            <div className="flex items-center gap-3 ml-1">
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center shrink-0">
-                                    <span className="text-white text-xs">AI</span>
+                            <div className="flex justify-start message-enter">
+                                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-2xl flex items-center justify-center mr-3 shadow-lg glow">
+                                    <Sparkles />
                                 </div>
-                                <div className="bg-white px-4 py-3 rounded-2xl rounded-tl-none border border-gray-100 shadow-sm">
+                                <div className="bg-white border-2 border-gray-100 rounded-3xl p-5 shadow-md">
                                     <Loader />
                                 </div>
                             </div>
@@ -975,44 +934,51 @@ const Web3Chatbot = () => {
                     </div>
                 </div>
 
-                {/* SUGGESTIONS & INPUT AREA */}
-                <div className="bg-white border-t border-gray-200 p-4 pb-6 sticky bottom-0 z-30">
-                    <div className="max-w-3xl mx-auto w-full">
-                        {/* Suggestions List */}
-                        {!isLoading && suggestions.length > 0 && (
-                            <div className="mb-3 overflow-x-auto scrollbar-hide flex gap-2 pb-1">
+                {!isLoading && suggestions.length > 0 && (
+                    <div className="glass-effect border-t border-white border-opacity-30 px-4 py-4 shadow-lg">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className="text-sm font-bold text-purple-600">💡</span>
+                                <div className="text-xs font-bold text-gray-700">
+                                    {activeTopic === 'Umum' ? 'Pertanyaan yang mungkin kamu suka:' : `Pertanyaan tentang ${activeTopic}:`}
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
                                 {suggestions.map((suggestion, idx) => (
                                     <button
                                         key={idx}
                                         onClick={() => handleSuggestionClick(suggestion)}
-                                        className="whitespace-nowrap bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-100 px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+                                        className="bg-white hover:bg-gradient-to-r hover:from-purple-50 hover:to-blue-50 border-2 border-gray-200 hover:border-purple-300 text-gray-700 hover:text-purple-600 px-4 py-2.5 rounded-2xl text-xs font-semibold transition-all shadow-sm hover:shadow-md hover:scale-105"
                                     >
                                         {suggestion}
                                     </button>
                                 ))}
                             </div>
-                        )}
+                        </div>
+                    </div>
+                )}
 
-                        {/* Input Form */}
-                        <form onSubmit={handleFormSubmit} className="relative flex items-center gap-2">
+                <div className="glass-effect border-t border-white border-opacity-30 px-4 py-5 shadow-2xl">
+                    <div className="max-w-4xl mx-auto">
+                        <form onSubmit={handleFormSubmit} className="relative">
                             <input
                                 type="text"
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Ketik pertanyaanmu..."
-                                className="flex-1 bg-gray-50 border border-gray-200 rounded-full px-5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all"
+                                placeholder="Tanyakan sesuatu tentang Web3... 💬"
+                                className="w-full bg-white border-2 border-gray-200 focus:border-purple-400 rounded-3xl pl-6 pr-16 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-purple-100 transition-all placeholder-gray-400 font-medium shadow-md"
                                 disabled={isLoading}
                             />
                             <button
                                 type="submit"
                                 disabled={isLoading || !input.trim()}
-                                className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white p-3 rounded-full transition-all shadow-md flex items-center justify-center"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 hover:from-purple-600 hover:via-purple-700 hover:to-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white p-3 rounded-2xl transition-all shadow-lg hover:shadow-xl hover:scale-105 glow"
                             >
-                                {isLoading ? <span className="w-5 h-5 block border-2 border-white/30 border-t-white rounded-full animate-spin"></span> : <Send />}
+                                {isLoading ? <Loader /> : <Send />}
                             </button>
                         </form>
-                        <div className="text-center mt-2">
-                            <p className="text-[10px] text-gray-400">Powered by Groq AI • Ridhwan Gantenk</p>
+                        <div className="text-center mt-3">
+                            <p className="text-xs text-gray-500 font-medium">⚡ Powered by Ridhwan Arya • Belajar Web3 jadi lebih mudah dan menyenangkan!</p>
                         </div>
                     </div>
                 </div>
