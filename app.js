@@ -1,4 +1,4 @@
-// File: app.js (Frontend)
+// File: app.js (Frontend - Revised for Mobile Responsiveness)
 
 const { useState, useRef, useEffect } = React;
 
@@ -172,43 +172,23 @@ const Web3Chatbot = () => {
     };
     
     // --- 2. Komponen Visual Generik ---
- // --- UPDATE: Generic Visual (Versi Premium) ---
     const GenericVisual = ({ icon, title, description, colorTheme }) => {
          const theme = colorTheme || themes.purple; 
-         
          return (
-              <div className={`${theme.bg} p-6 rounded-3xl border-2 ${theme.border} mt-4 shadow-xl relative overflow-hidden group hover:scale-[1.02] transition-all duration-300`}>
-                   {/* Background Decoration */}
-                   <div className={`absolute top-0 right-0 w-32 h-32 ${theme.iconBg} opacity-10 rounded-full blur-2xl transform translate-x-10 -translate-y-10`}></div>
-                   <div className={`absolute bottom-0 left-0 w-24 h-24 ${theme.iconBg} opacity-10 rounded-full blur-xl transform -translate-x-5 translate-y-5`}></div>
-
-                   <div className="relative z-10">
-                       <div className="flex items-start gap-4 mb-5">
-                            {/* Icon dengan Animasi Floating */}
-                            <div className={`w-14 h-14 ${theme.iconBg} rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/20 floating shrink-0`}>
-                                 <span className="text-white text-3xl filter drop-shadow-md">{icon}</span>
-                            </div>
-                            
-                            <div>
-                                <h3 className="font-black text-gray-800 text-xl tracking-tight mb-1">{title}</h3>
-                                <div className="flex gap-2">
-                                    <span className="text-[10px] font-bold px-2 py-0.5 bg-white/60 rounded-full border border-gray-200 text-gray-500 uppercase tracking-wide">
-                                        Konsep Dasar
-                                    </span>
-                                </div>
-                            </div>
-                       </div>
-
-                       {/* Description Box */}
-                       <div className="bg-white/80 backdrop-blur-md p-5 rounded-2xl border border-white/50 shadow-sm hover:shadow-md transition-shadow">
-                            <p className="text-sm text-gray-700 leading-relaxed font-medium">
-                                {description}
-                            </p>
-                       </div>
+              <div className={`${theme.bg} p-6 rounded-2xl border-2 ${theme.border} mt-4 shadow-lg`}>
+                   <div className="flex items-center gap-3 mb-5">
+                        <div className={`w-10 h-10 ${theme.iconBg} rounded-xl flex items-center justify-center shadow-md floating`}>
+                             <span className="text-white text-xl">{icon}</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">{title}</h3>
+                   </div>
+                   <div className="bg-white p-5 rounded-2xl border-2 border-gray-200 shadow-inner">
+                        <p className="text-sm text-gray-700 leading-relaxed">{description}</p>
                    </div>
               </div>
          );
     };
+
     // --- 3. Map Diagram Generik ---
     const visualMap = {
         'dapp': { icon: '📱', title: 'dApp (Aplikasi Terdesentralisasi)', description: 'Seperti aplikasi biasa (contoh: Twitter), tapi berjalan di atas blockchain. Tidak ada satu perusahaan yang mengontrolnya.', theme: themes.purple },
@@ -318,7 +298,8 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">CeFi (Bank) vs DeFi</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {/* Tradisional */}
                         <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center opacity-70">
                             <div className="text-xs font-bold text-gray-500 mb-2">Tradisional</div>
@@ -329,7 +310,7 @@ const Web3Chatbot = () => {
                             </div>
                         </div>
                         {/* DeFi */}
-                        <div className="bg-white p-3 rounded-xl border-2 border-cyan-400 text-center shadow-md transform scale-105">
+                        <div className="bg-white p-3 rounded-xl border-2 border-cyan-400 text-center shadow-md transform sm:scale-105">
                             <div className="text-xs font-bold text-cyan-600 mb-2">DeFi</div>
                             <div className="text-2xl mb-1">📱↔️📱</div>
                             <div className="text-[10px] text-gray-500 mb-2">Langsung (P2P)</div>
@@ -470,7 +451,8 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Akses Informasi</h3>
                     </div>
-                    <div className="flex justify-between items-center gap-2 bg-white p-4 rounded-xl border border-gray-200">
+                    {/* RESPONSIVE FIX: Stack vertically on mobile using Grid */}
+                    <div className="grid grid-cols-2 sm:flex sm:justify-between items-center gap-4 bg-white p-4 rounded-xl border border-gray-200">
                         <div className="flex flex-col items-center">
                             <div className="text-3xl mb-1">📰</div>
                             <span className="text-[10px] font-bold text-gray-600">Berita</span>
@@ -483,8 +465,9 @@ const Web3Chatbot = () => {
                             <div className="text-3xl mb-1">🐦</div>
                             <span className="text-[10px] font-bold text-gray-600">Komunitas</span>
                         </div>
-                        <div className="text-2xl text-blue-500">→</div>
-                        <div className="flex flex-col items-center bg-blue-100 p-2 rounded-lg">
+                        {/* Hidden arrow on mobile */}
+                        <div className="hidden sm:block text-2xl text-blue-500">→</div>
+                        <div className="flex flex-col items-center bg-blue-100 p-2 rounded-lg col-span-2 sm:col-span-1">
                             <span className="text-xl">🧠</span>
                             <span className="text-[10px] font-bold text-blue-700">Wawasan</span>
                         </div>
@@ -559,14 +542,16 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Literasi Hukum</h3>
                     </div>
-                    <div className="flex items-center justify-center gap-4">
-                        <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center w-24">
+                    {/* RESPONSIVE FIX: Stack vertical on mobile */}
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center w-full sm:w-24">
                             <div className="text-2xl mb-1">🏛️</div>
                             <div className="text-[10px] font-bold">Regulator</div>
                             <div className="text-[8px] text-gray-500">(Bappebti/OJK)</div>
                         </div>
-                        <div className="text-xl text-gray-400">↔️</div>
-                        <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center w-24">
+                        {/* Rotate arrow on mobile */}
+                        <div className="text-xl text-gray-400 transform rotate-90 sm:rotate-0">↔️</div>
+                        <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center w-full sm:w-24">
                             <div className="text-2xl mb-1">👤</div>
                             <div className="text-[10px] font-bold">Pengguna</div>
                             <div className="text-[8px] text-gray-500">(Hak & Pajak)</div>
@@ -587,7 +572,8 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Literasi Risiko</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="bg-white p-3 rounded-lg border-l-4 border-red-500 shadow-sm">
                             <div className="text-xs font-bold text-red-600 mb-1">⚠️ Ancaman</div>
                             <ul className="text-[10px] text-gray-600 list-disc ml-3">
@@ -619,6 +605,7 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Struktur Blockchain</h3>
                     </div>
+                    {/* Scrollable on mobile, okay as is */}
                     <div className="flex items-center gap-2 overflow-x-auto pb-3 scrollbar-hide">
                         {[1, 2, 3, 4].map((block) => (
                             <div key={block} className="flex items-center">
@@ -646,20 +633,21 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Evolusi Web</h3>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
-                        <div className="bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 transition-all hover:shadow-md">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-blue-300 transition-all hover:shadow-md flex flex-col items-center sm:block text-center sm:text-left">
                             <div className="text-4xl mb-3 text-center">📄</div>
                             <div className="font-bold text-sm text-blue-600 mb-1 text-center">Web 1.0</div>
                             <div className="text-xs text-gray-500 mb-2 text-center font-semibold">Read-Only</div>
                             <div className="text-xs text-center text-gray-600">Static Pages</div>
                         </div>
-                        <div className="bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-purple-300 transition-all hover:shadow-md">
+                        <div className="bg-white p-4 rounded-xl border-2 border-gray-200 hover:border-purple-300 transition-all hover:shadow-md flex flex-col items-center sm:block text-center sm:text-left">
                             <div className="text-4xl mb-3 text-center">💬</div>
                             <div className="font-bold text-sm text-purple-600 mb-1 text-center">Web 2.0</div>
                             <div className="text-xs text-gray-500 mb-2 text-center font-semibold">Read-Write</div>
                             <div className="text-xs text-center text-gray-600">Social Media</div>
                         </div>
-                        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-4 rounded-xl shadow-xl hover:shadow-2xl transition-all hover:scale-105">
+                        <div className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white p-4 rounded-xl shadow-xl hover:shadow-2xl transition-all hover:scale-105 flex flex-col items-center sm:block text-center sm:text-left">
                             <div className="text-4xl mb-3 text-center">🔐</div>
                             <div className="font-bold text-sm mb-1 text-center">Web 3.0</div>
                             <div className="text-xs opacity-90 mb-2 text-center font-semibold">Read-Write-Own</div>
@@ -679,21 +667,22 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Proof-of-Work Mining</h3>
                     </div>
-                    <div className="flex items-center justify-around gap-3">
+                    {/* RESPONSIVE FIX: Stack vertically on mobile with rotated arrows */}
+                    <div className="flex flex-col sm:flex-row items-center justify-around gap-3">
                         <div className="text-center">
                             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-3 hover:scale-110 transition-all">
                                 <span className="text-3xl">💻</span>
                             </div>
                             <div className="text-xs font-semibold text-gray-700">Komputer</div>
                         </div>
-                        <div className="text-3xl text-amber-500">→</div>
+                        <div className="text-3xl text-amber-500 transform rotate-90 sm:rotate-0">→</div>
                         <div className="text-center">
                             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-3 hover:scale-110 transition-all">
                                 <span className="text-3xl">🧮</span>
                             </div>
                             <div className="text-xs font-semibold text-gray-700">Solve Puzzle</div>
                         </div>
-                        <div className="text-3xl text-amber-500">→</div>
+                        <div className="text-3xl text-amber-500 transform rotate-90 sm:rotate-0">→</div>
                         <div className="text-center">
                             <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg mb-3 hover:scale-110 transition-all glow">
                                 <span className="text-3xl">🏆</span>
@@ -714,21 +703,22 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Proof-of-Stake</h3>
                     </div>
-                    <div className="flex items-center justify-around gap-3">
+                    {/* RESPONSIVE FIX: Stack vertically on mobile with rotated arrows */}
+                    <div className="flex flex-col sm:flex-row items-center justify-around gap-3">
                         <div className="text-center">
                             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-3 hover:scale-110 transition-all">
                                 <span className="text-3xl">💰</span>
                             </div>
                             <div className="text-xs font-semibold text-gray-700">Koin Anda</div>
                         </div>
-                        <div className="text-3xl text-green-500">→</div>
+                        <div className="text-3xl text-green-500 transform rotate-90 sm:rotate-0">→</div>
                         <div className="text-center">
                             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-md mb-3 hover:scale-110 transition-all">
                                 <span className="text-3xl">🔒</span>
                             </div>
                             <div className="text-xs font-semibold text-gray-700">Stake/Lock</div>
                         </div>
-                        <div className="text-3xl text-green-500">→</div>
+                        <div className="text-3xl text-green-500 transform rotate-90 sm:rotate-0">→</div>
                         <div className="text-center">
                             <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg mb-3 hover:scale-110 transition-all glow">
                                 <span className="text-3xl">🎁</span>
@@ -749,7 +739,8 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Coin vs Token</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="bg-gradient-to-br from-yellow-100 to-amber-100 p-5 rounded-2xl border-2 border-yellow-400 shadow-md hover:shadow-xl transition-all hover:scale-105">
                             <div className="text-4xl mb-3 text-center">🪙</div>
                             <div className="font-bold text-center mb-2 text-lg">COIN</div>
@@ -776,7 +767,8 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">NFT (Non-Fungible Token)</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-5 rounded-2xl text-white shadow-xl hover:shadow-2xl transition-all hover:scale-105">
                             <div className="text-4xl mb-3 text-center">🖼️</div>
                             <div className="font-bold text-sm text-center mb-1">Digital Art #1234</div>
@@ -870,7 +862,8 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Kondisi Pasar</h3>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {/* Bull Market */}
                         <div className="bg-white p-3 rounded-xl border-2 border-green-400 shadow-md hover:scale-105 transition-transform">
                             <div className="text-4xl mb-2 text-center animate-bounce">🐂</div>
@@ -946,17 +939,20 @@ const Web3Chatbot = () => {
                     </div>
 
                     <div className="relative bg-white p-4 rounded-xl border border-gray-200 shadow-inner">
-                        {/* The Trap */}
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="flex flex-col items-center w-1/3">
+                        {/* RESPONSIVE FIX: Stack Vertical on Mobile */}
+                        <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-4 sm:gap-0">
+                            <div className="flex flex-col items-center w-full sm:w-1/3">
                                 <div className="text-4xl mb-1 transform -rotate-12">😈</div>
                                 <span className="text-[10px] font-bold text-red-600">Hacker</span>
                             </div>
-                            <div className="w-1/3 h-0.5 bg-gray-300 relative">
-                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-xl">🎣</div>
-                                <div className="absolute top-2 left-1/2 -translate-x-1/2 text-[8px] bg-yellow-100 px-1 rounded border border-yellow-300">Link Palsu</div>
+                            
+                            {/* Vertical line on mobile, horizontal on desktop */}
+                            <div className="w-0.5 h-16 sm:w-1/3 sm:h-0.5 bg-gray-300 relative">
+                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl">🎣</div>
+                                <div className="absolute top-full sm:top-2 left-1/2 -translate-x-1/2 text-[8px] bg-yellow-100 px-1 rounded border border-yellow-300 whitespace-nowrap mt-1 sm:mt-0">Link Palsu</div>
                             </div>
-                            <div className="flex flex-col items-center w-1/3">
+
+                            <div className="flex flex-col items-center w-full sm:w-1/3">
                                 <div className="text-4xl mb-1">🐠</div>
                                 <span className="text-[10px] font-bold text-blue-600">Korban</span>
                             </div>
@@ -999,7 +995,8 @@ const Web3Chatbot = () => {
                         </div>
                     </div>
                     
-                    <div className="grid grid-cols-3 gap-2">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         <div className="bg-white/80 p-2 rounded-lg text-center border border-purple-100">
                             <span className="text-lg">🎮</span>
                             <div className="text-[8px] font-bold mt-1">Main Game</div>
@@ -1030,9 +1027,10 @@ const Web3Chatbot = () => {
                     
                     <div className="relative pt-4 pb-2">
                         {/* Garis Waktu */}
-                        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10"></div>
+                        <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10 hidden sm:block"></div>
                         
-                        <div className="flex justify-between items-center text-center">
+                        {/* RESPONSIVE FIX: Stack on mobile */}
+                        <div className="flex flex-col sm:flex-row justify-between items-center text-center gap-4 sm:gap-0">
                             {/* 2012 */}
                             <div className="bg-white p-2 rounded-lg border border-yellow-300 shadow-sm transform scale-90 opacity-60">
                                 <div className="text-[10px] font-bold text-gray-500">2012</div>
@@ -1045,8 +1043,8 @@ const Web3Chatbot = () => {
                                 <div className="text-xs font-bold text-yellow-600">25 BTC</div>
                             </div>
 
-                            {/* Scissors Icon */}
-                            <div className="text-2xl text-red-500 z-10 animate-pulse">✂️</div>
+                            {/* Scissors Icon - rotated on mobile */}
+                            <div className="text-2xl text-red-500 z-10 animate-pulse transform rotate-90 sm:rotate-0">✂️</div>
 
                             {/* 2024 */}
                             <div className="bg-gradient-to-br from-yellow-400 to-orange-500 text-white p-2 rounded-lg shadow-lg transform scale-110 z-20">
@@ -1159,8 +1157,8 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Psikologi Market</h3>
                     </div>
-
-                    <div className="grid grid-cols-3 gap-2">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                         {/* FOMO */}
                         <div className={`p-2 rounded-xl border-2 text-center transition-all ${lowerTopic.includes('fomo') ? 'bg-white border-green-400 scale-105 shadow-md' : 'bg-white/50 border-gray-200 grayscale opacity-60'}`}>
                             <div className="text-2xl mb-1">🤩</div>
@@ -1196,8 +1194,8 @@ const Web3Chatbot = () => {
                         </div>
                         <h3 className="font-bold text-gray-800 text-lg">Tempat Jual Beli (Exchange)</h3>
                     </div>
-
-                    <div className="flex gap-2">
+                    {/* RESPONSIVE FIX: Stack on mobile */}
+                    <div className="flex flex-col sm:flex-row gap-2">
                         {/* CEX */}
                         <div className="flex-1 bg-white p-3 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
                              <div className="absolute top-0 right-0 bg-gray-200 text-[8px] px-2 py-0.5 rounded-bl font-bold text-gray-600">Bank Style</div>
@@ -1213,7 +1211,7 @@ const Web3Chatbot = () => {
                         </div>
 
                         {/* VS */}
-                        <div className="flex items-center justify-center font-bold text-gray-300 text-xs">VS</div>
+                        <div className="flex items-center justify-center font-bold text-gray-300 text-xs py-2 sm:py-0">VS</div>
 
                         {/* DEX */}
                         <div className="flex-1 bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-3 rounded-xl shadow-md relative overflow-hidden">
@@ -1596,7 +1594,8 @@ const sendMessage = async (messageText) => {
                                         <Sparkles />
                                     </div>
                                 )}
-                                <div className={`max-w-[85%] ${msg.role === 'user' ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 text-white shadow-lg' : 'bg-white border-2 border-gray-100 shadow-md'} rounded-3xl p-5 hover:shadow-xl transition-all`}>
+                                {/* RESPONSIVE FIX: Better padding on mobile */}
+                                <div className={`max-w-[90%] sm:max-w-[85%] ${msg.role === 'user' ? 'bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 text-white shadow-lg' : 'bg-white border-2 border-gray-100 shadow-md'} rounded-3xl p-4 sm:p-5 hover:shadow-xl transition-all`}>
                                     
                                     <div className={`text-sm leading-relaxed ${msg.role === 'user' ? 'text-white font-medium' : 'text-gray-800'}`}>
                                         {msg.role === 'user' 
