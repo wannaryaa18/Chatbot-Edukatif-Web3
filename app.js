@@ -1040,7 +1040,6 @@ const Web3Chatbot = () => {
         'Bagaimana cara mulai di Web3?'
     ];
 
-  // --- UPDATE FUNGSI INI (VERSI CONTEXTUAL PINTAR) ---
     const generateNewSuggestions = (botReply, fullHistory, currentSuggestions, activeTopic) => {
         const lowerReply = botReply.toLowerCase();
         
@@ -1091,7 +1090,6 @@ const Web3Chatbot = () => {
         let candidates = [];
 
         // 3. SCANNING: Cek apakah jawaban bot mengandung kata kunci di atas
-        //    Ini prioritas TERTINGGI (Contextual)
         for (const [keyword, questions] of Object.entries(contextualMap)) {
             if (lowerReply.includes(keyword)) {
                 candidates.push(...questions);
@@ -1099,7 +1097,7 @@ const Web3Chatbot = () => {
         }
 
         // 4. PRIORITAS KEDUA: Ambil dari topik yang sedang aktif (jika ada)
-        //    Agar user tetap terpandu di jalur belajarnya
+
         if (activeTopic && topicSuggestionMap[activeTopic]) {
             candidates.push(...topicSuggestionMap[activeTopic]);
         }
@@ -1143,25 +1141,33 @@ const sendMessage = async (messageText) => {
         const userMessage = messageText || input;
         if (!userMessage.trim()) return;
         
-        // 1. Tambahkan pesan user ke UI sementara
+        // 1. Update UI User
         setMessages(prev => [...prev, { role: 'user', content: userMessage, visual: null }]);
         setInput('');
         setIsLoading(true);
-        setSuggestions([]); // Kosongkan saran saat loading
+        setSuggestions([]);
 
         try {
-            // Persiapan data untuk dikirim ke API (ambil 5 pesan terakhir saja biar hemat token)
+            // --- INI RAHASIANYA ---
+            // Kita buat aturan tegas agar AI tidak cerewet
+            const systemInstruction = {
+                role: 'system',
+                content: "Kamu adalah asisten belajar Web3 yang asik dan santai. ATURAN WAJIB: 1. Jawab maksimal 3 paragraf pendek. 2. Gunakan bahasa yang mudah dimengerti pemula. 3. Fokus pada analogi sederhana. 4. Jangan bertele-tele atau terlalu formal."
+            };
+
             const cleanHistory = messages.slice(-5).map(msg => ({
                 role: msg.role,
                 content: msg.content
             }));
             
+            // Masukkan instruksi sistem di urutan PERTAMA
             const messagesToSend = [
+                systemInstruction, 
                 ...cleanHistory,
                 { role: 'user', content: userMessage }
             ];
 
-            // Panggil API (Simulasi atau Real)
+            // Kirim ke API
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -1180,7 +1186,7 @@ const sendMessage = async (messageText) => {
             const data = await response.json();
             let botReply = data.choices[0].message.content;
 
-            // Bersihkan format markdown
+            // Cleaning text
             botReply = botReply.replace(/\*\*(.*?)\*\*/g, '$1'); 
             botReply = botReply.replace(/\*(.*?)\*/g, '$1');   
             botReply = botReply.replace(/`([^`]+)`/g, '$1'); 
@@ -1189,38 +1195,27 @@ const sendMessage = async (messageText) => {
             botReply = botReply.replace(/Contoh:/gi, '');
             botReply = botReply.replace(/\n/g, '<br />');
 
-            // Generate Visual jika relevan
             let visual = null;
             if (botReply && !botReply.toLowerCase().includes("hmm")) {
                  visual = generateVisual(userMessage);
             }
             
-            // Buat object pesan bot baru
             const newBotMessage = { 
                 role: 'assistant', 
                 content: botReply,
                 visual: visual
             };
 
-            // Masukkan pesan bot ke UI
             setMessages(prev => [...prev, newBotMessage]);
             
-            // --- PERBAIKAN UTAMA DI SINI ---
-            // Kita harus menyusun 'Full History' manual untuk dikirim ke generator saran
-            // Karena state 'messages' belum tentu sudah terupdate di baris ini (asynchronous)
+            // Generate saran pertanyaan lanjutan (Logic Pintar)
             const fullHistoryForLogic = [
                 ...messages, 
-                { role: 'user', content: userMessage }, // Pesan user yg baru
-                newBotMessage // Pesan bot yg baru
+                { role: 'user', content: userMessage },
+                newBotMessage
             ];
             
-            // Panggil fungsi saran dengan Parameter yang BENAR:
-            // 1. Jawaban Bot (String)
-            // 2. Full History (Array) -> INI YANG TADI ERROR
-            // 3. Saran Saat Ini (Array)
-            // 4. Topik Aktif (String)
             const newSuggestions = generateNewSuggestions(botReply, fullHistoryForLogic, suggestions, activeTopic);
-            
             setSuggestions(newSuggestions);
             
         } catch (error) {
@@ -1230,7 +1225,6 @@ const sendMessage = async (messageText) => {
                 content: `❌ Maaf, terjadi kesalahan: ${error.message}. Coba refresh halaman.`,
                 visual: null 
             }]);
-            // Jika error, kembalikan ke saran umum
             setSuggestions(topicSuggestionMap['Umum']);
         } finally {
             setIsLoading(false);
