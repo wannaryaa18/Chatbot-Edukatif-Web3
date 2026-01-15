@@ -237,10 +237,209 @@ const Web3Chatbot = () => {
     };
 
 
-    // --- 4. Fungsi generateVisual dengan Literasi Web3 ---
+    // --- 4. Fungsi generateVisual dengan Diagram Baru ---
     const generateVisual = (topic) => {
         const lowerTopic = topic.toLowerCase();
         
+        // --- VISUAL BARU: SMART CONTRACT (Logika Otomatis) ---
+        if (lowerTopic.includes('smart contract')) {
+            return (
+                <div className="bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 p-6 rounded-2xl border-2 border-yellow-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">📜</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Logika Smart Contract</h3>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        {/* Step 1: Syarat */}
+                        <div className="flex items-center bg-white p-3 rounded-xl border border-yellow-200 shadow-sm">
+                            <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mr-3 text-xs font-bold">IF</div>
+                            <div className="text-xs text-gray-600">
+                                <span className="font-bold text-gray-800">Syarat Terpenuhi</span>
+                                <br/>(Contoh: Barang sampai)
+                            </div>
+                            <div className="ml-auto text-xl">📦</div>
+                        </div>
+                        
+                        <div className="flex justify-center text-yellow-500 text-xl">⬇️</div>
+
+                        {/* Step 2: Proses Otomatis */}
+                        <div className="flex items-center bg-gradient-to-r from-yellow-100 to-amber-100 p-3 rounded-xl border-2 border-yellow-300 shadow-md">
+                            <div className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center mr-3 text-lg animate-spin-slow">⚙️</div>
+                            <div className="text-xs text-gray-800 font-bold">
+                                Kode Berjalan Otomatis...
+                            </div>
+                        </div>
+
+                        <div className="flex justify-center text-yellow-500 text-xl">⬇️</div>
+
+                        {/* Step 3: Hasil */}
+                        <div className="flex items-center bg-white p-3 rounded-xl border border-yellow-200 shadow-sm">
+                            <div className="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3 text-xs font-bold">THEN</div>
+                            <div className="text-xs text-gray-600">
+                                <span className="font-bold text-gray-800">Eksekusi Hasil</span>
+                                <br/>(Uang cair ke penjual)
+                            </div>
+                            <div className="ml-auto text-xl">💸</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: DeFi (Bank vs DeFi) ---
+        if (lowerTopic.includes('defi')) {
+            return (
+                <div className="bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 p-6 rounded-2xl border-2 border-cyan-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-sky-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">💸</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">CeFi (Bank) vs DeFi</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                        {/* Tradisional */}
+                        <div className="bg-gray-50 p-3 rounded-xl border border-gray-200 text-center opacity-70">
+                            <div className="text-xs font-bold text-gray-500 mb-2">Tradisional</div>
+                            <div className="text-2xl mb-1">🏦</div>
+                            <div className="text-[10px] text-gray-500 mb-2">Bank sebagai Perantara</div>
+                            <div className="flex justify-center items-center gap-1 text-[10px] bg-red-100 text-red-600 py-1 rounded">
+                                <span>❌</span> Ribet & Lama
+                            </div>
+                        </div>
+                        {/* DeFi */}
+                        <div className="bg-white p-3 rounded-xl border-2 border-cyan-400 text-center shadow-md transform scale-105">
+                            <div className="text-xs font-bold text-cyan-600 mb-2">DeFi</div>
+                            <div className="text-2xl mb-1">📱↔️📱</div>
+                            <div className="text-[10px] text-gray-500 mb-2">Langsung (P2P)</div>
+                            <div className="flex justify-center items-center gap-1 text-[10px] bg-green-100 text-green-600 py-1 rounded font-bold">
+                                <span>✅</span> Cepat & Global
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: DAO (Struktur Organisasi) ---
+        if (lowerTopic.includes('dao')) {
+            return (
+                <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 p-6 rounded-2xl border-2 border-green-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🏛️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Struktur DAO</h3>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        {/* Perusahaan Biasa */}
+                        <div className="flex items-center gap-4 opacity-50 grayscale">
+                            <div className="flex flex-col items-center">
+                                <span className="text-2xl">👔</span>
+                                <span className="text-[10px] font-bold">Boss</span>
+                            </div>
+                            <div className="h-0.5 w-full bg-gray-300"></div>
+                            <div className="text-xs text-gray-500 font-mono">Top-Down</div>
+                        </div>
+
+                        {/* DAO */}
+                        <div className="bg-white p-4 rounded-xl border-2 border-green-400 shadow-md relative overflow-hidden">
+                            <div className="absolute top-0 left-0 w-full h-1 bg-green-400"></div>
+                            <div className="flex justify-center items-center gap-2 mb-2">
+                                <span className="text-xl">🗳️</span>
+                                <span className="text-sm font-bold text-green-700">Voting Komunitas</span>
+                            </div>
+                            <div className="flex justify-between items-center px-4">
+                                <div className="text-2xl">👤</div>
+                                <div className="text-2xl">👤</div>
+                                <div className="text-2xl">👤</div>
+                                <div className="text-2xl">👤</div>
+                            </div>
+                            <p className="text-[10px] text-center mt-2 text-gray-500">Semua pemegang token punya suara.</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: Layer 2 (Jalan Tol) ---
+        if (lowerTopic.includes('layer 2') || lowerTopic.includes('l2')) {
+            return (
+                <div className="bg-gradient-to-br from-red-50 via-rose-50 to-pink-50 p-6 rounded-2xl border-2 border-red-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">🛣️</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Analogi Layer 2</h3>
+                    </div>
+                    
+                    {/* Layer 1 - Macet */}
+                    <div className="mb-3">
+                        <div className="flex justify-between text-xs text-red-800 font-bold mb-1">
+                            <span>Layer 1 (Ethereum)</span>
+                            <span>Macet & Mahal 😫</span>
+                        </div>
+                        <div className="bg-red-200 h-8 rounded-lg flex items-center px-2 gap-1 overflow-hidden relative">
+                             <div className="absolute inset-0 bg-red-200 opacity-50"></div>
+                             <span className="text-lg relative z-10">🚗</span>
+                             <span className="text-lg relative z-10">🚙</span>
+                             <span className="text-lg relative z-10">🚛</span>
+                             <span className="text-lg relative z-10">🚌</span>
+                             <span className="text-lg relative z-10">🏎️</span>
+                        </div>
+                    </div>
+
+                    {/* Layer 2 - Jalan Tol */}
+                    <div>
+                        <div className="flex justify-between text-xs text-green-700 font-bold mb-1">
+                            <span>Layer 2 (Arbitrum/Optimism)</span>
+                            <span>Cepat & Murah 🚀</span>
+                        </div>
+                        <div className="bg-green-100 h-8 rounded-lg flex items-center justify-between px-2 border border-green-300">
+                             <span className="text-lg transform translate-x-20 transition-transform duration-1000">🏎️💨</span>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- VISUAL BARU: Gas Fee (Bensin) ---
+        if (lowerTopic.includes('gas fee') || lowerTopic.includes('biaya gas')) {
+            return (
+                <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 p-6 rounded-2xl border-2 border-orange-200 mt-4 shadow-lg">
+                    <div className="flex items-center gap-3 mb-5">
+                        <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center shadow-md floating">
+                            <span className="text-white text-xl">⛽</span>
+                        </div>
+                        <h3 className="font-bold text-gray-800 text-lg">Gas Fee</h3>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <div className="flex items-center justify-center gap-4 w-full">
+                            <div className="flex flex-col items-center">
+                                <span className="text-4xl mb-1">🚗</span>
+                                <span className="text-[10px] font-bold text-gray-500">Transaksi</span>
+                            </div>
+                            <div className="text-2xl text-gray-400">+</div>
+                            <div className="flex flex-col items-center">
+                                <span className="text-4xl mb-1">⛽</span>
+                                <span className="text-[10px] font-bold text-gray-500">Bensin (ETH)</span>
+                            </div>
+                        </div>
+                        <div className="w-full h-0.5 bg-gray-300 my-3"></div>
+                        <div className="bg-white p-3 rounded-xl border border-orange-300 w-full text-center shadow-sm">
+                            <div className="text-xs text-gray-600">
+                                Tanpa bensin, mobil tidak jalan. <br/>
+                                <span className="font-bold text-orange-600">Jaringan macet = Bensin makin mahal.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // --- (VISUAL LAMA TETAP ADA DI BAWAH SINI) ---
+
         // --- VISUAL 1: AKSES INFORMASI (Information Access) ---
         if (lowerTopic.includes('akses informasi') || lowerTopic.includes('mencari informasi')) {
             return (
@@ -249,7 +448,7 @@ const Web3Chatbot = () => {
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-sky-600 rounded-xl flex items-center justify-center shadow-md floating">
                             <span className="text-white text-xl">🔍</span>
                         </div>
-                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 1: Akses Informasi</h3>
+                        <h3 className="font-bold text-gray-800 text-lg">Akses Informasi</h3>
                     </div>
                     <div className="flex justify-between items-center gap-2 bg-white p-4 rounded-xl border border-gray-200">
                         <div className="flex flex-col items-center">
@@ -283,7 +482,7 @@ const Web3Chatbot = () => {
                         <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center shadow-md floating">
                             <span className="text-white text-xl">🧐</span>
                         </div>
-                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 2: Evaluasi Informasi</h3>
+                        <h3 className="font-bold text-gray-800 text-lg">Evaluasi Informasi</h3>
                     </div>
                     <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-3 bg-red-50 p-3 rounded-lg border border-red-200 opacity-50">
@@ -308,7 +507,7 @@ const Web3Chatbot = () => {
                         <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-md floating">
                             <span className="text-white text-xl">📈</span>
                         </div>
-                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 3: Literasi Ekonomi</h3>
+                        <h3 className="font-bold text-gray-800 text-lg">Literasi Ekonomi</h3>
                     </div>
                     <div className="flex justify-around items-end h-24 bg-white p-4 rounded-xl border border-emerald-100">
                         <div className="w-8 bg-gray-200 h-[40%] rounded-t-md relative group">
@@ -338,7 +537,7 @@ const Web3Chatbot = () => {
                         <div className="w-10 h-10 bg-gradient-to-br from-slate-600 to-gray-700 rounded-xl flex items-center justify-center shadow-md floating">
                             <span className="text-white text-xl">⚖️</span>
                         </div>
-                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 4: Literasi Hukum</h3>
+                        <h3 className="font-bold text-gray-800 text-lg">Literasi Hukum</h3>
                     </div>
                     <div className="flex items-center justify-center gap-4">
                         <div className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm text-center w-24">
@@ -366,7 +565,7 @@ const Web3Chatbot = () => {
                         <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-md floating">
                             <span className="text-white text-xl">🛡️</span>
                         </div>
-                        <h3 className="font-bold text-gray-800 text-lg">Dimensi 5: Literasi Risiko</h3>
+                        <h3 className="font-bold text-gray-800 text-lg">Literasi Risiko</h3>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         <div className="bg-white p-3 rounded-lg border-l-4 border-red-500 shadow-sm">
@@ -391,7 +590,6 @@ const Web3Chatbot = () => {
             );
         }
 
-        // --- EXISTING VISUALS (Blockchain, Web3, dll) ---
         if (lowerTopic.includes('blockchain') || lowerTopic.includes('block chain')) {
             return (
                 <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6 rounded-2xl border-2 border-blue-200 mt-4 shadow-lg">
@@ -604,7 +802,7 @@ const Web3Chatbot = () => {
             );
         }
         
-        // Loop melalui map untuk mencari keyword yang cocok
+        // Loop melalui map untuk mencari keyword yang cocok (FALLBACK)
         for (const keyword in visualMap) {
             if (lowerTopic.includes(keyword)) {
                 const data = visualMap[keyword];
@@ -614,7 +812,6 @@ const Web3Chatbot = () => {
 
         return null;
     };
-
 
     const shuffleArray = (array) => {
         const newArray = [...array];
